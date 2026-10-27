@@ -1,0 +1,1342 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phironix — Motion & Horreur</title>
+<meta name="description" content="François — monteur et motion designer. Horreur, threads, urbex, paranormal.">
+
+<style>
+@font-face{font-family:"Dracula";src:url("fonts/Dracula.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Scribbles";src:url("fonts/HorrorScribbles.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Inter24";src:url("fonts/Inter24pt-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+
+:root{
+  --green:#73B167; --coral:#FF715B; --plum:#290F46;
+  --ink:#06040A; --bone:#E8DCC6; --fg:#EDE4DA; --fg-dim:#9A8E93;
+  --maxw:1180px; --gut:clamp(18px,4vw,48px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--fg);
+  font-family:"Inter24",system-ui,sans-serif;font-weight:700;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video,canvas{display:block;max-width:100%}
+a{color:inherit}
+.pix{image-rendering:pixelated;image-rendering:crisp-edges}
+
+/* ===================== DÉCOR ===================== */
+#decor{position:fixed;inset:0;z-index:0;background:#04020A;overflow:hidden}
+.scene{position:absolute;inset:0;overflow:hidden;will-change:opacity}
+
+/* --- scène 1 : la cathédrale brisée --- */
+/* le ciel derrière la façade : rouge sang, visible par TOUTES les brèches */
+#cath-sky{position:absolute;inset:0;
+  background:
+    radial-gradient(38% 46% at 68% 26%,#8E1A14 0%,#4A0C0C 45%,transparent 75%),
+    linear-gradient(180deg,#3A0A0C 0%,#240609 55%,#120305 100%)}
+#moon-cath{position:absolute;width:clamp(90px,10vw,170px);height:auto;
+  filter:drop-shadow(0 0 70px rgba(220,60,40,.85));will-change:transform,opacity}
+#cath{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:filter}
+/* les faisceaux : dessinés net puis adoucis, comme une lumière volumétrique */
+#beams{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:screen;
+  pointer-events:none;filter:blur(9px);will-change:opacity}
+/* la loi d'éclairage : seul ce que la lune atteint reste visible, le reste tombe */
+#cath-dark{position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none;
+  background:radial-gradient(58% 64% at var(--lx,26%) var(--ly,27%),
+    #FFFFFF 0%, #B99A96 24%, #5A3A3E 48%, #1A0E14 72%, #08040A 100%)}
+#cath-tint{position:absolute;inset:0;mix-blend-mode:multiply;background:#FF4A3A;opacity:0}
+
+/* --- scène 2 : le village --- */
+#vil-sky{position:absolute;inset:0;
+  background:linear-gradient(180deg,#0A0718 0%,#14101F 40%,#1A1424 100%)}
+#moon-vil{position:absolute;width:clamp(110px,13vw,215px);height:auto;
+  filter:drop-shadow(0 0 80px rgba(220,70,45,.8));will-change:transform,opacity}
+#vil,#vil-dark{position:absolute;left:50%;top:0;width:106%;max-width:none;
+  transform:translateX(-50%);will-change:transform}
+/* le même village, lumière éteinte : il prend le relais quand la lune se couche */
+#vil-dark{opacity:0;will-change:transform,opacity}
+#vil-glow{position:absolute;inset:0;mix-blend-mode:screen;opacity:0;pointer-events:none;
+  background:radial-gradient(42% 52% at var(--mx,74%) var(--my,22%),rgba(255,150,110,.40),transparent 68%)}
+#vil-shade{position:absolute;inset:0;mix-blend-mode:multiply;opacity:0;pointer-events:none;
+  background:linear-gradient(var(--sa,250deg),rgba(0,0,0,0) 30%,rgba(5,2,8,.70) 85%)}
+
+/* --- brume générée en code --- */
+.mist{position:absolute;left:-25%;width:150%;background-repeat:repeat;
+  will-change:transform,opacity;pointer-events:none;opacity:0}
+
+/* --- scène 3 : le Nyx --- */
+/* le dégradé plein écran : on part du violet clair et on remonte vers la nuit */
+#nyx-bg{position:absolute;left:0;top:0;width:100%;height:auto;min-height:215vh;
+  object-fit:cover;max-width:none;will-change:transform}
+/* le ciel étoilé, qui se révèle une fois le fond assez sombre */
+#neb{position:absolute;left:-6%;top:-6%;width:112%;height:112%;object-fit:cover;
+  max-width:none;mix-blend-mode:screen;opacity:0;will-change:transform,opacity;
+  /* il occupe le ciel, pas le bas de l'écran où arrivent les collines */
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,.35) 72%,transparent 92%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,.35) 72%,transparent 92%)}
+#glints{position:absolute;inset:0;mix-blend-mode:screen;pointer-events:none}
+.hill{position:absolute;left:-22%;width:144%;max-width:none;height:auto;will-change:transform}
+
+#grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.5}
+#scan{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.10;
+  background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.5) 0 1px,transparent 1px 3px)}
+#scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,2,8,.08) 0%,rgba(6,2,8,.38) 28%,rgba(6,2,8,.46) 100%)}
+#vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(132% 96% at 50% 46%,transparent 36%,rgba(0,0,0,.66) 100%)}
+
+/* ===================== STRUCTURE ===================== */
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
+main{position:relative;z-index:2}
+section{position:relative;padding-block:clamp(90px,14vh,180px)}
+.tag{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--coral);
+  display:flex;align-items:center;gap:14px;margin:0 0 26px}
+.tag::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,currentColor,transparent);opacity:.45}
+h1,h2,h3{font-family:"Dracula",serif;font-weight:400;margin:0;line-height:.92;letter-spacing:.01em}
+/* le grain ne va que sur les très grands titres : en dessous il mange les lettres */
+#hero h1,.fiche-id h2,#contact h2{filter:url(#typix)}
+
+header{position:fixed;top:0;left:0;right:0;z-index:50;border-bottom:1px solid transparent;
+  transition:background .4s,backdrop-filter .4s,border-color .4s}
+header.stuck{background:rgba(7,3,7,.74);backdrop-filter:blur(10px);border-color:rgba(255,113,91,.22)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{font-family:"Dracula",serif;font-size:24px;letter-spacing:.06em;text-decoration:none;color:var(--bone)}
+nav a{font-size:11px;letter-spacing:.26em;text-transform:uppercase;text-decoration:none;color:var(--fg-dim);
+  margin-left:clamp(14px,3vw,30px);transition:color .25s}
+nav a:hover{color:var(--coral)}
+@media(max-width:620px){nav{display:none}}
+
+/* ===================== OUVERTURE ===================== */
+#hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-start;
+  padding-top:clamp(72px,9vh,100px);padding-bottom:36px}
+.hero-top{font-family:"Scribbles",cursive;font-size:clamp(18px,2.6vw,28px);color:var(--coral);
+  margin:0;opacity:0;transform:translateY(12px);animation:rise .9s .2s forwards}
+#hero h1{font-size:clamp(50px,10.5vw,132px);color:var(--bone);margin-top:2px;
+  text-shadow:0 0 34px rgba(220,60,40,.6),0 5px 0 rgba(0,0,0,.6);
+  opacity:0;transform:translateY(22px);animation:rise 1s .34s forwards}
+.hero-sub{max-width:62ch;margin-top:14px;font-size:clamp(13px,1.35vw,15.5px);line-height:1.65;color:#D3C7C0;
+  text-shadow:0 2px 12px rgba(0,0,0,.85);opacity:0;transform:translateY(14px);animation:rise .9s .5s forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+.frame{position:relative;aspect-ratio:16/9;max-height:50svh;margin:clamp(16px,2.4vh,28px) auto 0;
+  width:100%;border:1px solid rgba(255,113,91,.35);background:#0B0509;
+  box-shadow:0 0 0 1px rgba(0,0,0,.8),0 30px 90px -30px rgba(220,60,40,.6);overflow:hidden;
+  opacity:0;transform:translateY(20px);animation:rise 1s .66s forwards}
+.frame::before,.frame::after{content:"";position:absolute;width:22px;height:22px;border:2px solid var(--coral);opacity:.9;z-index:4}
+.frame::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.frame::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.frame video,.frame iframe{width:100%;height:100%;object-fit:cover;border:0}
+.vsl-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:
+    radial-gradient(70% 90% at 50% 40%,rgba(196,30,38,.5),transparent 72%),
+    radial-gradient(60% 70% at 78% 80%,rgba(67,32,140,.5),transparent 70%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 4px),#16081A}
+.play{width:62px;height:62px;border-radius:50%;border:2px solid var(--coral);display:grid;place-items:center;
+  background:rgba(41,15,70,.5);transition:transform .3s,box-shadow .3s}
+.play:hover{transform:scale(1.08);box-shadow:0 0 36px rgba(255,113,91,.55)}
+.play::after{content:"";border-left:15px solid var(--coral);border-top:9px solid transparent;
+  border-bottom:9px solid transparent;margin-left:5px}
+.vsl-ph span{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#C8B8B1}
+.vsl-note{margin-top:10px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-dim);text-align:center}
+
+/* ===================== TRAVAUX ===================== */
+.proj{margin-bottom:clamp(60px,9vw,120px)}
+.proj .head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:14px}
+.proj .num{font-family:"Scribbles",cursive;font-size:clamp(26px,4vw,44px);color:var(--coral);line-height:1}
+.proj .kind{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--fg-dim);text-align:right}
+.cutbox{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0A060C;border:1px solid rgba(255,113,91,.22)}
+.cutbox .media{position:absolute;inset:0}
+.cutbox .media video{width:100%;height:100%;object-fit:cover}
+.cutbox .ph{position:absolute;inset:0;
+  background:
+    radial-gradient(55% 75% at 28% 28%,rgba(255,113,91,.8),transparent 62%),
+    radial-gradient(65% 70% at 78% 72%,rgba(120,100,215,.75),transparent 68%),
+    radial-gradient(90% 90% at 50% 50%,rgba(140,30,80,.55),transparent 75%),#241029;
+  animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{filter:hue-rotate(28deg) brightness(1.16)}}
+.cutbox svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cutbox .media iframe,.cutbox .media .poster{width:100%;height:100%;border:0;display:block;object-fit:cover}
+.cutbox.live{cursor:pointer}
+.cutbox.live.open svg,.cutbox.live.open .slot{opacity:0}
+.cutbox.live svg,.cutbox.live .slot{transition:opacity .55s ease}
+/* l'ombre que la plaque projette dans le trou des lettres : elle court le long du
+   bord intérieur, sur la miniature, et détache ainsi le mot de l'image */
+/* 2.2 dans le repère du SVG = 1 px réel à l'écran : le tracé est affiché à 90 %
+   et le masque en coupe la moitié, celle qui tomberait hors du trou */
+.cuthalo{fill:none;stroke:#fff;pointer-events:none;
+  stroke-width:2.2;opacity:.26;filter:blur(7px);transition:opacity .5s ease}
+.cutbox:hover .cuthalo{opacity:.11}
+.cutbox .cuttext{font-family:"Dracula",serif;text-anchor:middle;dominant-baseline:middle}
+.cutbox .plate2{transition:opacity .6s ease;filter:url(#dspix)}
+.cutbox:hover .plate2{opacity:.74}
+.cutbox .slot{position:absolute;left:14px;bottom:12px;z-index:3;
+  font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,113,91,.75)}
+.cutbox .slot::before{content:"◻ "}
+.proj .foot{display:flex;justify-content:space-between;gap:20px;margin-top:14px;flex-wrap:wrap}
+.proj .foot p{margin:0;font-size:13px;line-height:1.7;color:#BCAFB4;max-width:60ch}
+.proj .foot .role{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--green)}
+.rv{opacity:0;transform:translateY(34px);
+  transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* ===================== FICHE ===================== */
+#fiche .card{border:1px solid rgba(115,177,103,.35);
+  background:linear-gradient(160deg,rgba(41,15,70,.86),rgba(10,5,14,.9));
+  backdrop-filter:blur(3px);padding:clamp(24px,4vw,52px);position:relative;
+  box-shadow:0 30px 100px -40px rgba(67,32,140,.9)}
+#fiche .card::before{content:"";position:absolute;inset:7px;border:1px solid rgba(115,177,103,.18);pointer-events:none}
+.fiche-top{display:flex;align-items:center;gap:clamp(20px,3.4vw,40px);flex-wrap:wrap;
+  border-bottom:1px solid rgba(115,177,103,.25);padding-bottom:24px;margin-bottom:28px}
+.fiche-top img{width:clamp(130px,17vw,200px);height:auto;border:1px solid rgba(115,177,103,.4);flex:0 0 auto}
+.fiche-id h2{font-size:clamp(38px,6.6vw,74px);color:var(--bone)}
+.fiche-id p{margin:8px 0 0;font-size:clamp(11px,1.3vw,13px);letter-spacing:.26em;
+  text-transform:uppercase;color:var(--green)}
+/* la cédille : la virgule de Dracula, posée sous le C */
+.ced{position:relative;display:inline-block}
+.ced::after{content:",";position:absolute;left:50%;bottom:-.02em;
+  transform:translate(-50%,0) scale(.78);color:inherit;line-height:1;
+  text-shadow:inherit}
+.grid{display:grid;gap:clamp(22px,3vw,40px);grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.grid h3{font-size:26px;color:var(--coral);margin-bottom:12px}
+.grid ul{list-style:none;margin:0;padding:0;font-size:13px;line-height:2;color:#C6BAC0}
+.grid li::before{content:"◆";color:var(--green);font-size:9px;margin-right:9px;vertical-align:middle}
+.bar{margin-bottom:12px}
+.bar span{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:#C6BAC0;margin-bottom:5px}
+.bar i{display:block;height:7px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
+.bar i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--v,70%);
+  background:repeating-linear-gradient(90deg,var(--green) 0 5px,transparent 5px 7px)}
+
+/* ===================== CONTACT ===================== */
+#contact{text-align:center}
+#contact h2{font-size:clamp(46px,9vw,124px);color:var(--bone)}
+.mail{display:inline-block;margin-top:26px;font-size:clamp(15px,2.2vw,22px);letter-spacing:.06em;
+  text-decoration:none;color:var(--coral);border-bottom:1px solid rgba(255,113,91,.45);padding-bottom:6px;
+  transition:color .3s,border-color .3s}
+.mail:hover{color:var(--green);border-color:var(--green)}
+.socials{margin-top:28px;display:flex;gap:22px;justify-content:center;flex-wrap:wrap}
+.socials a{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--fg-dim);text-decoration:none}
+.socials a:hover{color:var(--coral)}
+footer{position:relative;z-index:2;padding:40px 0 60px;text-align:center;
+  font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#5E5459}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- filtre de pixelisation, appliqué aux titres découpés pour qu'ils aient le même grain -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- grain fin pour la typographie : le texte reste lisible, les bords deviennent carrés -->
+  <filter id="typix" x="-4%" y="-4%" width="108%" height="108%">
+    <feFlood x="1" y="1" width="1" height="1"/>
+    <feComposite width="3" height="3"/>
+    <feTile result="g"/>
+    <feComposite in="SourceGraphic" in2="g" operator="in"/>
+    <feMorphology operator="dilate" radius="1.5"/>
+  </filter>
+  <filter id="dspix" x="0" y="0" width="100%" height="100%">
+    <feFlood x="1" y="1" width="1" height="1"/>
+    <feComposite width="4" height="4"/>
+    <feTile result="grille"/>
+    <feComposite in="SourceGraphic" in2="grille" operator="in"/>
+    <feMorphology operator="dilate" radius="2"/>
+  </filter>
+</svg>
+
+<!-- ============ DÉCOR ============ -->
+<div id="decor" aria-hidden="true">
+
+  <!-- Nyx -->
+  <div class="scene" id="sc-nyx" style="opacity:0">
+    <img class="pix" id="nyx-bg" src="img/nyx_grad.jpg" alt="">
+    <img class="pix" id="neb" src="img/nyx_stars.jpg" alt="">
+    <canvas id="glints"></canvas>
+    <img class="hill pix" id="hill-far"  src="img/collines_far.png"  alt="">
+    <img class="hill pix" id="hill-near" src="img/collines_near.png" alt="">
+  </div>
+
+  <!-- Village -->
+  <div class="scene" id="sc-vil" style="opacity:0">
+    <div id="vil-sky"></div>
+    <img class="pix" id="moon-vil" src="img/lune.png" alt="">
+    <img class="pix" id="vil" src="img/village_front.png" alt="">
+    <img class="pix" id="vil-dark" src="img/village_dark.png" alt="">
+    <div id="vil-glow"></div>
+    <div id="vil-shade"></div>
+  </div>
+
+  <!-- Cathédrale brisée -->
+  <div class="scene" id="sc-cath">
+    <div id="cath-sky"></div>
+    <img class="pix" id="moon-cath" src="img/lune.png" alt="">
+    <img class="pix" id="cath" src="img/cathedrale.png" alt="">
+    <div id="cath-dark"></div>
+    <canvas id="beams"></canvas>
+    <div id="cath-tint"></div>
+  </div>
+
+  <!-- Brume -->
+  <div class="scene" id="sc-mist">
+    <div class="mist m1"></div><div class="mist m2"></div>
+    <div class="mist m3"></div><div class="mist m4"></div><div class="mist m5"></div>
+  </div>
+
+  <div id="grain"></div><div id="scan"></div><div id="scrim"></div><div id="vig"></div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header id="hdr">
+  <div class="wrap">
+    <a class="brand" href="#hero">Phironix</a>
+    <nav><a href="#travaux">Travaux</a><a href="#fiche">Fiche</a><a href="#contact">Contact</a></nav>
+  </div>
+</header>
+
+<main>
+  <section id="hero">
+    <div class="wrap">
+      <p class="hero-top">monteur &amp; motion designer</p>
+      <h1>PHIRONIX</h1>
+      <p class="hero-sub">Horreur, threads, urbex, paranormal. Du dérushage au motion design,
+         je prends vos rushs et j'en fais quelque chose qui tient jusqu'à la dernière seconde.</p>
+      <div class="frame">
+        <!-- ▼▼ REMPLACER PAR LA VSL ▼▼
+             <video src="videos/vsl.mp4" poster="videos/vsl.jpg" controls playsinline></video>
+             puis supprimer le bloc .vsl-ph -->
+        <div class="vsl-ph">
+          <div class="play" role="button" aria-label="Lire la VSL"></div>
+          <span>la VSL arrive</span>
+        </div>
+      </div>
+      <p class="vsl-note">Qui je suis, comment je travaille, ce que je livre — en trois minutes.</p>
+    </div>
+  </section>
+
+  <section id="travaux">
+    <div class="wrap">
+      <p class="tag">01 — Travaux</p>
+      <div id="projects"></div>
+    </div>
+  </section>
+
+  <section id="fiche">
+    <div class="wrap">
+      <p class="tag">02 — Fiche</p>
+      <div class="card rv">
+        <div class="fiche-top">
+          <img class="pix" src="img/portrait.png" alt="Portrait de François">
+          <div class="fiche-id">
+            <h2>FRAN<span class="ced">C</span>OIS</h2>
+            <p>Monteur et motion designer — freelance</p>
+          </div>
+        </div>
+        <div class="grid">
+          <div>
+            <h3>Prestations</h3>
+            <ul><li>Dérushage</li><li>Montage long format</li><li>Shorts &amp; formats verticaux</li>
+                <li>Motion design &amp; habillage</li><li>Sous-titrage</li><li>Étalonnage &amp; mixage simple</li></ul>
+          </div>
+          <div>
+            <h3>Outils</h3>
+            <ul><li>After Effects</li><li>Premiere Pro</li><li>Photoshop</li>
+                <li>DaVinci Resolve</li><li>Illustrator</li></ul>
+          </div>
+          <div>
+            <h3>Terrain</h3>
+            <div class="bar"><span>Horreur / threads<b>60</b></span><i style="--v:60%"></i></div>
+            <div class="bar"><span>Urbex / paranormal<b>72</b></span><i style="--v:72%"></i></div>
+            <div class="bar"><span>Gaming / Minecraft<b>30</b></span><i style="--v:30%"></i></div>
+            <div class="bar"><span>Motion design<b>90</b></span><i style="--v:90%"></i></div>
+            <div class="bar"><span>Formats courts<b>80</b></span><i style="--v:80%"></i></div>
+          </div>
+          <div>
+            <h3>Conditions</h3>
+            <ul><li>Missions ponctuelles ou récurrentes</li><li>Devis sous 24 h</li>
+                <li>Deux allers-retours de retours inclus</li><li>Livraison sur Drive ou Frame.io</li>
+                <li>Disponible en français</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap rv">
+      <p class="tag" style="justify-content:center">03 — Contact</p>
+      <h2>ON EN PARLE ?</h2>
+      <a class="mail" href="mailto:francois.kouame.job@gmail.com">francois.kouame.job@gmail.com</a>
+      <div class="socials">
+        <a href="https://www.instagram.com/phironix_/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@Phironix8" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>Phironix — © 2026</footer>
+
+<script>
+/* ===========================================================
+   1) PROJETS
+   =========================================================== */
+const PROJETS = [
+  {num:"01", titre:"MINUIT",  kind:"Thread horreur · 24 min", role:"Montage · Dérushage",
+   txt:"Récit long format monté au rythme de la voix : respirations tenues, coupes invisibles, montée progressive jusqu'au dernier tiers."},
+  {num:"02", titre:"URBEX",   kind:"Exploration · 18 min",    role:"Montage · Étalonnage",
+   txt:"Deux heures de rushs ramenées à dix-huit minutes. Nettoyage du son, étalonnage froid, sous-titres intégrés."},
+  {num:"03", titre:"LEGENDE", video:"Brx4QIkuQaM", poster:"img/thumb_03.jpg",
+   kind:"Légende urbaine · 42 s", role:"Montage · Habillage",
+   txt:"Récit face caméra ramené à l'essentiel : accroche immédiate, rythme tenu, pas un plan de trop."},
+  {num:"04", titre:"STORYTELLING", video:"quFF4erNNy0", poster:"img/thumb_04.jpg",
+   kind:"Storytelling · 35 s", role:"Montage · Sous-titrage",
+   txt:"Format court calibré pour la rétention : accroche en deux secondes, sous-titres rythmés, boucle propre."},
+  {num:"05", titre:"DELIRE", video:"vvdh7IOm-E4", poster:"img/thumb_05.jpg",
+   kind:"Urbex · 49 s", role:"Montage · Rythme",
+   txt:"Exploration nocturne à plusieurs : on garde les vrais moments, on coupe tout le reste."}
+];
+const host = document.getElementById('projects');
+PROJETS.forEach((p,i)=>{
+  const el = document.createElement('article');
+  el.className = 'proj rv';
+  /* le titre doit tenir dans le cadre, quelle que soit sa longueur */
+  const fs = Math.min(230, Math.round(3400 / Math.max(5, p.titre.length)));
+  /* la miniature est servie depuis le site : elle s'affiche tout de suite,
+     à travers les lettres, et la vidéo ne se charge qu'au clic */
+  const media = p.video
+    ? `<img class="poster" src="${p.poster}" alt="${p.titre}">`
+    : `<!-- ▼ REMPLACER PAR : <video src="videos/${p.titre.toLowerCase()}.mp4" muted loop playsinline autoplay poster="videos/${p.titre.toLowerCase()}.jpg"></video> -->
+       <div class="ph" style="animation-delay:${i*-2.5}s"></div>`;
+  el.innerHTML = `
+    <div class="head"><span class="num">${p.num}</span><span class="kind">${p.kind}</span></div>
+    <div class="cutbox${p.video ? ' live' : ''}">
+      <div class="media">${media}</div>
+      <svg viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <mask id="cut${i}">
+            <rect width="1200" height="675" fill="#fff"/>
+            <text class="cuttext" x="600" y="348" font-size="${fs}" fill="#000">${p.titre}</text>
+          </mask>
+          <!-- l'inverse : ne garde que l'intérieur des lettres, là où tombe l'ombre -->
+          <mask id="in${i}">
+            <rect width="1200" height="675" fill="#000"/>
+            <text class="cuttext" x="600" y="348" font-size="${fs}" fill="#fff">${p.titre}</text>
+          </mask>
+        </defs>
+        <rect class="plate2" width="1200" height="675" fill="#0A060C" mask="url(#cut${i})"/>
+        <text class="cuttext cuthalo" x="600" y="348" font-size="${fs}" mask="url(#in${i})">${p.titre}</text>
+      </svg>
+      <span class="slot">${p.video ? 'cliquer pour voir' : 'emplacement vidéo '+p.num}</span>
+    </div>
+    <div class="foot"><p>${p.txt}</p><span class="role">${p.role}</span></div>`;
+  host.appendChild(el);
+  /* un clic écarte la plaque et lance la vidéo */
+  if(p.video){
+    const box = el.querySelector('.cutbox');
+    box.addEventListener('click', ()=>{
+      if(box.classList.contains('open')) return;
+      box.classList.add('open');
+      box.querySelector('.media').innerHTML =
+        `<iframe src="https://www.youtube-nocookie.com/embed/${p.video}?autoplay=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1"
+           title="${p.titre}" allowfullscreen
+           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`;
+    });
+  }
+});
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:.18});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ===========================================================
+   2) LES FAISCEAUX — dessinés à chaque image, adoucis par un flou.
+      Deux moments : la lune visible dans une fissure, puis la lune
+      derrière la rosace, dont le verre découpe la lumière en bandes.
+   =========================================================== */
+const beamCv = document.getElementById('beams'), bx = beamCv.getContext('2d');
+function sizeBeams(){
+  beamCv.width  = Math.max(2, Math.round(innerWidth/2));
+  beamCv.height = Math.max(2, Math.round(innerHeight/2));
+}
+sizeBeams();
+
+function cone(cx, cy, ang, spread, len, c0, c1, alpha){
+  const ex = cx+Math.cos(ang)*len, ey = cy+Math.sin(ang)*len;
+  const g = bx.createLinearGradient(cx, cy, ex, ey);
+  g.addColorStop(0, c0); g.addColorStop(0.55, c1); g.addColorStop(1, 'rgba(0,0,0,0)');
+  bx.globalAlpha = alpha; bx.fillStyle = g;
+  bx.beginPath(); bx.moveTo(cx, cy);
+  bx.lineTo(cx+Math.cos(ang-spread)*len, cy+Math.sin(ang-spread)*len);
+  bx.lineTo(cx+Math.cos(ang+spread)*len, cy+Math.sin(ang+spread)*len);
+  bx.closePath(); bx.fill();
+}
+
+/* les couleurs que le verre donne à la lumière qui le traverse */
+const VERRE = [
+  [[226,186,255,.52],[150, 86,210,.20]],
+  [[255,150,190,.50],[200, 60,110,.18]],
+  [[150,224,255,.46],[ 60,140,205,.17]],
+  [[255,170,130,.54],[205, 70, 45,.20]],
+  [[255,232,206,.50],[190,120, 90,.18]],
+  [[190,160,255,.44],[110, 70,190,.16]]
+];
+/* la lumière de la lune avant qu'elle ne rencontre le verre */
+const ROUGE = [[255,186,150,.60],[225,70,45,.22]];
+const rgba  = c => `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${c[3].toFixed(3)})`;
+const lerpC = (a,b,t) => a.map((v,i)=> v+(b[i]-v)*t);
+
+function drawBeams(t, mx, my, aMoon, rx, ry, aRose, tint, dir){
+  const W = beamCv.width, H = beamCv.height;
+  bx.clearRect(0,0,W,H);
+  if(aMoon < .01 && aRose < .01) return;
+  bx.globalCompositeOperation = 'lighter';
+  const diag = Math.hypot(W,H)*1.5;
+
+  /* --- la lune est dans une fissure : elle nous éclaire en face --- */
+  if(aMoon > .01){
+    const X = mx/2, Y = my/2;
+    /* la lumière descend vers nous, du côté opposé à la fissure */
+    const base = dir > 0 ? 0.62 : (Math.PI - 0.62);
+    for(let i=0;i<9;i++){
+      const seed = i*1.7;
+      const ang  = base + dir*(i-4)*0.085 + Math.sin(t*0.00022+seed)*0.012;
+      const sp   = 0.016 + (i%3)*0.010;
+      const flick= 0.72 + 0.28*Math.sin(t*0.0008+seed*2.1);
+      /* à mesure qu'elle atteint le vitrail, sa lumière prend les couleurs du verre */
+      const v = VERRE[i % VERRE.length];
+      cone(X, Y, ang, sp, diag,
+           rgba(lerpC(ROUGE[0], v[0], tint)),
+           rgba(lerpC(ROUGE[1], v[1], tint)), aMoon*flick);
+    }
+    /* l'éblouissement : halo serré, puis la croix de l'objectif */
+    const pul = 0.88+0.12*Math.sin(t*0.0013);
+    const r = Math.min(W,H)*0.10*pul;
+    const hg = bx.createRadialGradient(X,Y,0,X,Y,r);
+    hg.addColorStop(0,'rgba(255,232,210,.75)');
+    hg.addColorStop(.30,'rgba(255,130,95,.26)');
+    hg.addColorStop(1,'rgba(180,30,20,0)');
+    bx.globalAlpha = aMoon; bx.fillStyle = hg;
+    bx.beginPath(); bx.arc(X,Y,r,0,7); bx.fill();
+    bx.globalAlpha = aMoon*0.55; bx.fillStyle = 'rgba(255,196,160,.9)';
+    bx.fillRect(X-r*2.6, Y-0.8, r*5.2, 1.6);
+    bx.fillRect(X-0.8, Y-r*1.1, 1.6, r*2.2);
+  }
+
+  /* --- la lune est derrière la rosace : le verre découpe la lumière --- */
+  if(aRose > .01){
+    const X = rx/2, Y = ry/2;
+    const base = 1.50;                      // le verre diffuse de part et d'autre
+    for(let i=0;i<15;i++){
+      const seed = i*2.3;
+      const col  = VERRE[i % VERRE.length];
+      const ang  = base + (i-7)*0.135 + Math.sin(t*0.00018+seed)*0.010;
+      const sp   = 0.016 + (i%4)*0.012;
+      const flick= 0.80 + 0.20*Math.sin(t*0.0006+seed*1.4);
+      cone(X, Y, ang, sp, diag, rgba(col[0]), rgba(col[1]), aRose*flick*1.9);
+    }
+    const hg = bx.createRadialGradient(X,Y,0,X,Y,Math.min(W,H)*0.16);
+    hg.addColorStop(0,'rgba(255,214,236,.55)');
+    hg.addColorStop(.4,'rgba(190,110,220,.22)');
+    hg.addColorStop(1,'rgba(90,30,120,0)');
+    bx.globalAlpha = aRose*0.9; bx.fillStyle = hg;
+    bx.beginPath(); bx.arc(X,Y,Math.min(W,H)*0.16,0,7); bx.fill();
+  }
+  bx.globalAlpha = 1;
+  bx.globalCompositeOperation = 'source-over';
+}
+const cathImg = document.getElementById('cath');
+
+/* ===========================================================
+   3) BRUME + GRAIN — textures calculées, jamais pixelisées
+   =========================================================== */
+function noiseTile(size, oct, alphaFn, rgb){
+  const c = document.createElement('canvas'); c.width=c.height=size;
+  const g = c.getContext('2d'); const img = g.createImageData(size,size);
+  const grids=[];
+  for(let o=0;o<oct;o++){ const n=4<<o, gr=new Float32Array(n*n);
+    for(let i=0;i<n*n;i++) gr[i]=Math.random(); grids.push({n,gr}); }
+  const sm = t=>t*t*(3-2*t);
+  const val=(gr,x,y,n)=>{
+    const fx=x*n, fy=y*n, x0=Math.floor(fx)%n, y0=Math.floor(fy)%n;
+    const x1=(x0+1)%n, y1=(y0+1)%n, tx=sm(fx-Math.floor(fx)), ty=sm(fy-Math.floor(fy));
+    return (gr[y0*n+x0]*(1-tx)+gr[y0*n+x1]*tx)*(1-ty)+(gr[y1*n+x0]*(1-tx)+gr[y1*n+x1]*tx)*ty;
+  };
+  for(let y=0;y<size;y++) for(let x=0;x<size;x++){
+    let v=0,amp=.5,sum=0;
+    for(let o=0;o<oct;o++){ const {n,gr}=grids[o]; v+=val(gr,x/size,y/size,n)*amp; sum+=amp; amp*=0.52; }
+    v/=sum;
+    const i=(y*size+x)*4;
+    img.data[i]=rgb[0]; img.data[i+1]=rgb[1]; img.data[i+2]=rgb[2];
+    img.data[i+3]=alphaFn(v);
+  }
+  g.putImageData(img,0,0); return c.toDataURL('image/png');
+}
+const mistURL  = noiseTile(512,5, v=>Math.min(255, Math.pow(Math.max(0,(v-0.42)/0.58),1.5)*255), [236,234,246]);
+const grainURL = noiseTile(128,1, v=>Math.abs(v-0.5)*150, [200,200,210]);
+document.getElementById('grain').style.backgroundImage = `url(${grainURL})`;
+
+/* la brume doit finir par envelopper celui qui regarde, puis devenir le ciel */
+const MIST = [
+  {el:document.querySelector('.m1'), top:55, h: 85, sz:1900, sp:0.0032, op:0.95, soft:1},
+  {el:document.querySelector('.m2'), top:38, h: 95, sz:1300, sp:0.0060, op:0.88, soft:1},
+  {el:document.querySelector('.m3'), top:18, h:105, sz: 920, sp:0.0098, op:0.78, soft:1},
+  {el:document.querySelector('.m4'), top:-5, h:115, sz: 650, sp:0.0155, op:0.66, soft:1},
+  {el:document.querySelector('.m5'), top:-25,h:170, sz:2600, sp:0.0022, op:1.00, soft:0}
+];
+MIST.forEach(m=>{
+  m.el.style.backgroundImage = `url(${mistURL})`;
+  m.el.style.backgroundSize  = m.sz+'px auto';
+  m.el.style.top = m.top+'%'; m.el.style.height = m.h+'vh';
+  if(m.soft) m.el.style.maskImage = m.el.style.webkitMaskImage =
+    'linear-gradient(180deg,transparent,#000 22%,#000 76%,transparent)';
+});
+
+/* ===========================================================
+   4) LE CIEL DE NYX : halos qui pulsent et éclats
+   =========================================================== */
+const gc = document.getElementById('glints'), gx = gc.getContext('2d');
+let STARS=[], GLOW=[];
+function initSky(){
+  gc.width = innerWidth; gc.height = innerHeight;
+  /* un ciel riche : beaucoup d'étoiles fixes, quelques-unes qui respirent */
+  const n = Math.round(innerWidth*innerHeight/1500);
+  STARS = Array.from({length:n},()=>{
+    const big = Math.random();
+    return {
+      x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+      r: big<0.955 ? 1 : 2,
+      base: 0.32+Math.random()*0.5,
+      tw: Math.random()<0.26,                 // une sur quatre scintille, doucement
+      ph: Math.random()*6.28, sp: 0.35+Math.random()*0.7,
+      c: Math.random()<0.74 ? '232,226,255' : '255,246,214',
+      order: Math.random()                    // sert à les faire apparaître peu à peu
+    };
+  });
+  GLOW = Array.from({length:6},()=>({
+    x:Math.random()*innerWidth, y:Math.random()*innerHeight*0.75,
+    r:90+Math.random()*180, ph:Math.random()*6.28, sp:0.22+Math.random()*0.4,
+    c: Math.random()<0.5 ? '226,214,255' : '255,240,210'}));
+}
+function drawSky(t,a,dens){
+  gx.clearRect(0,0,gc.width,gc.height);
+  if(a<0.01) return;
+  for(const g of GLOW){                       // nappes lumineuses qui respirent
+    const pul = 0.4+0.6*(0.5+0.5*Math.sin(t*0.00035*g.sp+g.ph));
+    const rg = gx.createRadialGradient(g.x,g.y,0,g.x,g.y,g.r*(0.85+0.25*pul));
+    rg.addColorStop(0,`rgba(${g.c},${(0.13*pul*a).toFixed(3)})`);
+    rg.addColorStop(1,`rgba(${g.c},0)`);
+    gx.fillStyle=rg; gx.beginPath(); gx.arc(g.x,g.y,g.r*1.1,0,7); gx.fill();
+  }
+  for(const s of STARS){
+    if(s.order > dens) continue;              // elles arrivent au fil de la descente
+    const lvl = s.tw
+      ? s.base*(0.62+0.38*(0.5+0.5*Math.sin(t*0.00055*s.sp+s.ph)))
+      : s.base;
+    gx.globalAlpha = a*lvl;
+    gx.fillStyle = `rgb(${s.c})`;
+    gx.fillRect(s.x|0, s.y|0, s.r, s.r);
+  }
+  gx.globalAlpha=1;
+}
+initSky();
+
+/* ===========================================================
+   5) LA DESCENTE
+   =========================================================== */
+const hdr = document.getElementById('hdr');
+const E = {
+  cath:document.getElementById('sc-cath'), cImg:document.getElementById('cath'),
+  cTint:document.getElementById('cath-tint'), mCath:document.getElementById('moon-cath'),
+  cDark:document.getElementById('cath-dark'),
+  vil:document.getElementById('sc-vil'), vImg:document.getElementById('vil'),
+  vDark:document.getElementById('vil-dark'),
+  mVil:document.getElementById('moon-vil'),
+  glow:document.getElementById('vil-glow'), shade:document.getElementById('vil-shade'),
+  nyx:document.getElementById('sc-nyx'), neb:document.getElementById('neb'),
+  nGrad:document.getElementById('nyx-bg'),
+  hF:document.getElementById('hill-far'), hN:document.getElementById('hill-near')
+};
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const ramp =(p,a,b)=>clamp((p-a)/(b-a));
+const band =(p,a,b,c,d)=>clamp(Math.min((p-a)/(b-a),(d-p)/(d-c)));
+const mix  =(a,b,t)=>a+(b-a)*t;
+
+/* place un élément à des coordonnées de L'IMAGE (0..1), en tenant compte
+   du recadrage object-fit:cover — sans ça la lune rate les brèches */
+let cathPosX = 0.5;        // cadrage horizontal de la façade (0.5 = centré)
+function onImage(img, fx, fy){
+  const iw = img.naturalWidth || 1400, ih = img.naturalHeight || 781;
+  const sc = Math.max(innerWidth/iw, innerHeight/ih);
+  const over = iw*sc - innerWidth;
+  return [ -over*cathPosX + fx*iw*sc, (innerHeight - ih*sc)/2 + fy*ih*sc ];
+}
+/* Les quatre brèches de la façade, mesurées sur l'image (fractions de sa taille).
+   En écran étroit le recadrage n'en laisse voir qu'une partie : on prend alors la
+   plus à gauche encore visible, pour que la lune traverse toujours vers la rosace. */
+const FISSURES = [
+  {x0:0.237, x1:0.316, y:0.268},
+  {x0:0.277, x1:0.398, y:0.489},
+  {x0:0.581, x1:0.727, y:0.491},
+  {x0:0.688, x1:0.755, y:0.247}
+];
+function fissureDepart(img){
+  const iw = img.naturalWidth || 1280, ih = img.naturalHeight || 714;
+  const sc = Math.max(innerWidth/iw, innerHeight/ih);
+  const frac = (innerWidth/sc)/iw;
+  /* écran étroit : on décale un peu le cadrage pour dégager la brèche de gauche,
+     sans perdre la rosace, qui doit rester visible pour la suite */
+  cathPosX = frac < 0.55 ? 0.44 : 0.5;
+  img.style.objectPosition = (cathPosX*100).toFixed(0)+'% center';
+  const xmin = cathPosX*(1-frac), xmax = xmin + frac;
+  for(const f of FISSURES){
+    const a = Math.max(f.x0, xmin + 0.012), b = Math.min(f.x1, xmax - 0.012);
+    if(b - a > 0.008 && (a+b)/2 < 0.47) return [(a+b)/2, f.y];
+  }
+  return [Math.min(0.44, xmin + 0.03), 0.489];   // écran très étroit : au plus près
+}
+function placeOnImage(el, img, fx, fy){
+  const [x,y] = onImage(img, fx, fy);
+  el.style.left = x.toFixed(1)+'px';
+  el.style.top  = y.toFixed(1)+'px';
+  el.style.transform = 'translate(-50%,-50%)';
+}
+let p=0,T=0,raf=null;
+
+function render(){
+  /* ---------- LA CATHÉDRALE ---------- */
+  /* le fondu part trois crans plus tôt : dès que le cadre vidéo masque le vitrail */
+  const aC  = 1 - ramp(p,0.121,0.211);
+  E.cath.style.opacity = aC.toFixed(3);
+
+  /* la lune traverse de gauche à droite derrière la façade :
+     on ne la voit que par les brèches, puis elle passe derrière la rosace.
+     Ses coordonnées sont celles de l'image, pas de l'écran, sinon elle
+     tombe à côté des brèches dès que le cadrage change. */
+  const trav = ramp(p,0.022,0.095);
+  const [fx0, fy0] = fissureDepart(E.cImg);
+  const mcx  = mix(fx0, 0.50, trav), mcy = mix(fy0, 0.285, trav);
+  const dir  = fx0 < 0.5 ? 1 : -1;        // la lumière part du côté opposé à la lune
+  const [mX,mY] = onImage(E.cImg, mcx, mcy);
+  E.mCath.style.left = mX.toFixed(1)+'px';
+  E.mCath.style.top  = mY.toFixed(1)+'px';
+  E.mCath.style.transform = 'translate(-50%,-50%)';
+
+  /* la lune nous fait face dans la fissure, puis file derrière la pierre */
+  const aMoon = band(p, -0.05, -0.02, 0.050, 0.082);
+  E.mCath.style.opacity = aMoon.toFixed(3);
+
+  /* la rosace ne s'allume qu'une fois la lune derrière elle */
+  const aRose = band(p, 0.078, 0.102, 0.118, 0.158);
+  const [rX,rY] = onImage(E.cImg, 0.50, 0.285);
+
+  /* tout ce que la lune n'atteint pas tombe dans le noir, en dégradé */
+  const lx = (aRose>aMoon ? rX : mX) / innerWidth * 100;
+  const ly = (aRose>aMoon ? rY : mY) / innerHeight * 100;
+  E.cDark.style.setProperty('--lx', lx.toFixed(2)+'%');
+  E.cDark.style.setProperty('--ly', ly.toFixed(2)+'%');
+  E.cDark.style.opacity = (0.92 - 0.22*Math.max(aMoon,aRose)).toFixed(3);
+
+  /* le verre est éclairé, mais sans faisceau tant que la lune n'est pas derrière */
+  E.cImg.style.filter = `brightness(${mix(0.95,1.62,aRose).toFixed(3)}) saturate(${mix(1.05,1.5,aRose).toFixed(3)}) contrast(${mix(1,1.08,aRose).toFixed(3)})`;
+  E.cTint.style.opacity = (0.14 + 0.26*Math.max(aMoon*0.5, aRose)).toFixed(3);
+  const tint = ramp(p, 0.038, 0.082);   // le rouge vire aux couleurs du verre
+  /* au-dela de la cathedrale le canvas n'affiche plus rien : inutile de le
+     redessiner et surtout de le laisser flouter, c'est ce qui coute le plus cher */
+  if(aC > 0.004){
+    if(beamCv.style.display==='none') beamCv.style.display='';
+    drawBeams(T, mX, mY, aMoon*aC, rX, rY, aRose*aC, tint, dir);
+    beamCv.style.opacity = aC.toFixed(3);
+  } else if(beamCv.style.display!=='none'){
+    beamCv.style.display='none'; beamCv.style.opacity='0';
+  }
+
+  /* ---------- LE VILLAGE ---------- */
+  const aV = band(p,0.131,0.221,0.48,0.60);
+  E.vil.style.opacity = aV.toFixed(3);
+  const dv = ramp(p,0.20,0.58);
+  const vh = E.vImg.offsetHeight || innerHeight*1.8;
+  const vTr = `translateX(-50%) translateY(${(-(Math.max(0,vh-innerHeight))*dv).toFixed(1)}px)`;
+  E.vImg.style.transform = vTr;
+  E.vDark.style.transform = vTr;
+  /* la lune se couche derrière les toits : la lumière s'en va avec elle */
+  /* la lune passe derrière les toits entre 23 et 28 % : la lumière part avec elle */
+  const nuit = ramp(p, 0.235, 0.295);
+  E.vDark.style.opacity = nuit.toFixed(3);
+
+  /* la lune ressort à droite, puis se couche derrière les toits */
+  const mvx = mix(80, 88, dv), mvy = mix(13, 54, ramp(p,0.20,0.52));
+  E.mVil.style.left = mvx.toFixed(2)+'%';
+  E.mVil.style.top  = mvy.toFixed(2)+'%';
+  E.mVil.style.transform = 'translate(-50%,-50%)';
+  E.mVil.style.opacity = (ramp(p,0.19,0.27)).toFixed(3);
+
+  E.glow.style.setProperty('--mx', mvx+'%');
+  E.glow.style.setProperty('--my', mvy+'%');
+  E.glow.style.opacity = (0.9*aV*(1-nuit)).toFixed(3);
+  E.shade.style.setProperty('--sa', (250 - dv*40).toFixed(1)+'deg');
+  E.shade.style.opacity = (mix(0.22,0.34,dv)*aV).toFixed(3);   // la rue doit rester lisible
+
+  /* ---------- LA BRUME : elle monte, enveloppe, puis se dissipe dans le ciel ---------- */
+  MIST.forEach((m,i)=>{
+    const a = (i===4)
+      ? band(p, 0.43, 0.55, 0.61, 0.73)                       // la nappe qui englobe
+      : band(p, 0.35+i*0.012, 0.47+i*0.016, 0.64+i*0.022, 0.76+i*0.022);
+    m.el.style.opacity = (a*m.op).toFixed(3);
+    const rise = ramp(p,0.38,0.94);
+    m.el.style.transform = `translateY(${mix(32,-40,rise)*(1+i*0.2)}vh)`;
+    m.el.style.backgroundPositionX = (T*m.sp).toFixed(1)+'px';
+    m.el.style.backgroundPositionY = (-T*m.sp*0.35).toFixed(1)+'px';
+  });
+
+  /* ---------- LE NYX ---------- */
+  const aN = ramp(p,0.60,0.78);
+  E.nyx.style.opacity = aN.toFixed(3);
+  /* le dégradé remonte vers sa partie sombre, et s'éteint franchement en même
+     temps : sans ça le violet reste moyen presque tout du long et rien ne se voit */
+  const nuitCiel = ramp(p, 0.60, 0.96);
+  const gh = E.nGrad.offsetHeight || innerHeight*2.2;
+  E.nGrad.style.transform = `translateY(${(-(gh-innerHeight)*(1-nuitCiel)).toFixed(1)}px)`;
+  E.nGrad.style.filter = `brightness(${mix(1.12, 0.40, nuitCiel).toFixed(3)}) saturate(${mix(1.05, 0.82, nuitCiel).toFixed(3)})`;
+
+  /* le ciel étoilé se révèle une fois le fond assez sombre, et reste dans le ciel */
+  const aStars = ramp(p, 0.74, 0.93);
+  E.neb.style.opacity = (aStars*0.78).toFixed(3);
+  E.neb.style.transform = `translate(${(Math.sin(T*0.00004)*1.2).toFixed(2)}%,${(Math.cos(T*0.00003)*1.0).toFixed(2)}%) scale(${mix(1.06,1,aStars).toFixed(3)})`;
+  drawSky(T, aN*aStars, ramp(p,0.76,0.99));
+
+  /* les collines montent pendant le scroll, bien avant la fin */
+  const dn = ramp(p,0.67,0.96);
+  E.hF.style.bottom = mix(-95, -22, dn).toFixed(2)+'vh';
+  E.hN.style.bottom = mix(-60,  -5, dn).toFixed(2)+'vh';
+}
+
+function onScroll(){
+  const max = document.body.scrollHeight - innerHeight;
+  p = clamp(scrollY / Math.max(1,max));
+  hdr.classList.toggle('stuck', scrollY > 50);
+  if(!raf) raf = requestAnimationFrame(()=>{ raf=null; render(); });
+}
+addEventListener('scroll', onScroll, {passive:true});
+addEventListener('resize', ()=>{ initSky(); sizeBeams(); onScroll(); });
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function loop(ts){ T=ts; render(); requestAnimationFrame(loop); }
+onScroll();
+if(!reduce) requestAnimationFrame(loop); else render();
+</script>
+
+<!-- ============================================================
+     LA CHAUVE-SOURIS  —  couche 3, au-dessus du décor et des vidéos
+     ============================================================ -->
+<style>
+#bat{position:fixed;top:0;left:0;z-index:55;width:var(--bw);height:var(--bh);
+  --bw:90px; --bh:88px;
+  background:url("img/bat_sheet.png") no-repeat 0 0 / 600% 100%;
+  image-rendering:pixelated;image-rendering:crisp-edges;max-width:none;
+  opacity:0;transition:opacity 1.1s ease;
+  transform-origin:50% 100%;
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.55));
+  will-change:transform,background-position}
+#bat.on{opacity:1}
+#bat.grab{cursor:pointer}
+/* une fois posée sous le titre elle recouvrirait l'adresse — sous le titre et
+   hors de l'adresse est géométriquement impossible, les deux sont centrés et
+   de largeur voisine. Accrochée, elle passe donc derrière le texte du bloc,
+   tout en restant devant le décor. En vol elle reprend sa couche habituelle. */
+
+@media (max-width:760px){ #bat{--bw:60px;--bh:58px} }
+
+/* les faits passent en Inter : HorrorScribbles déclare les lettres accentuées
+   mais ne les dessine pas (38 glyphes vides), donc « promènes » y perdrait son
+   accent. Scribbles reste pour « attrape-moi », qui n'en contient aucun. */
+#batbub{position:fixed;top:0;left:0;z-index:56;pointer-events:none;
+  font-family:"Inter24",system-ui,sans-serif;font-weight:700;
+  font-size:clamp(13.5px,1.45vw,15.5px);line-height:1.34;letter-spacing:.005em;
+  color:#15070F;background:var(--bone);padding:7px 15px 8px;border-radius:14px;
+  max-width:min(360px,70vw);text-align:center;
+  opacity:0;transition:opacity .4s ease;
+  box-shadow:0 2px 0 rgba(0,0,0,.55),0 8px 18px rgba(0,0,0,.4)}
+#batbub.court{font-family:"Scribbles",cursive;font-weight:400;
+  font-size:clamp(15px,1.9vw,19px);line-height:1.3;
+  white-space:nowrap;padding:4px 12px 6px}
+#batbub.on{opacity:.94}
+#batbub::after{content:"";position:absolute;left:var(--tip,20px);bottom:-7px;width:0;height:0;
+  margin-left:-7px;
+  border:7px solid transparent;border-bottom:0;border-top-color:var(--bone)}
+/* accrochée sous le titre, la bulle se range sur le côté — ou dessous quand
+   l'écran est trop étroit — pour ne jamais recouvrir « ON EN PARLE ? » */
+#batbub.g::after,#batbub.d::after,#batbub.b::after{bottom:auto;margin-left:0;border:7px solid transparent}
+#batbub.g::after{left:auto;right:-7px;top:var(--tipy,18px);margin-top:-7px;
+  border-right:0;border-left-color:var(--bone)}
+#batbub.d::after{left:-7px;top:var(--tipy,18px);margin-top:-7px;
+  border-left:0;border-right-color:var(--bone)}
+#batbub.b::after{top:-7px;left:var(--tip,20px);margin-left:-7px;
+  border-top:0;border-bottom-color:var(--bone)}
+
+#poof{position:fixed;inset:0;z-index:57;pointer-events:none}
+
+#ctrls{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:70;
+  display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ctl{display:flex;align-items:center;gap:11px;
+  background:rgba(9,4,15,.8);border:1px solid rgba(255,113,91,.32);border-right:0;
+  border-radius:11px 0 0 11px;padding:10px 13px;color:var(--bone);
+  cursor:pointer;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  transform:translateX(calc(100% - 44px));
+  transition:transform .36s cubic-bezier(.22,1,.36,1),border-color .3s}
+.ctl:hover,.ctl:focus-visible{transform:translateX(0);border-color:rgba(255,113,91,.7);outline:0}
+.ctl .lbl{font-family:"Scribbles",cursive;font-size:15px;letter-spacing:.05em;white-space:nowrap}
+.ctl svg{flex:0 0 18px;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.ctl .off{opacity:0;transition:opacity .2s}
+.ctl[data-on="0"] .off{opacity:.85}
+#snd .wave{transition:opacity .2s}
+#snd[data-on="0"] .wave{opacity:.16}
+#bato svg{stroke-width:1.5}
+#bato[data-on="0"] .corps{opacity:.3}
+@media (prefers-reduced-motion:reduce){ #bat,.ctl{transition:none} }
+</style>
+
+<div id="bat" aria-hidden="true"></div>
+<div id="batbub" class="court" aria-hidden="true">attrape-moi</div>
+<canvas id="poof" aria-hidden="true"></canvas>
+
+<div id="ctrls">
+  <button id="snd" class="ctl" data-on="0" aria-pressed="false" aria-label="Activer ou couper le son">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/>
+      <path class="wave" d="M16 9.3a4 4 0 0 1 0 5.4"/>
+      <path class="wave" d="M18.6 6.8a7.6 7.6 0 0 1 0 10.4"/>
+      <path class="off" d="M3.5 3.5l17 17"/>
+    </svg>
+    <span class="lbl">son</span>
+  </button>
+  <button id="bato" class="ctl" data-on="1" aria-pressed="true" aria-label="Afficher ou retirer la chauve-souris">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <g class="corps">
+        <path d="M12 8.6c-1 0-1.7.8-1.7 1.8 0 1.4 1.7 3 1.7 3s1.7-1.6 1.7-3c0-1-.7-1.8-1.7-1.8z"/>
+        <path d="M10.4 9.6C9 7.9 6.6 7 4.2 7.4c.7 1 .6 2.3.1 3.3 1.2-.2 2 .5 2.3 1.5 1-.9 2.4-1.3 3.8-1.1z"/>
+        <path d="M13.6 9.6c1.4-1.7 3.8-2.6 6.2-2.2-.7 1-.6 2.3-.1 3.3-1.2-.2-2 .5-2.3 1.5-1-.9-2.4-1.3-3.8-1.1z"/>
+        <path d="M10.7 7.3L10 5.6l1.6.9M13.3 7.3L14 5.6l-1.6.9"/>
+      </g>
+      <path class="off" d="M3.5 3.5l17 17"/>
+    </svg>
+    <span class="lbl">chauve-souris</span>
+  </button>
+</div>
+
+<audio id="amb" preload="metadata">
+  <source src="audio/voix.mp4" type="audio/mp4">
+</audio>
+
+<script>
+(()=>{
+  const el   = document.getElementById('bat');
+  const bub  = document.getElementById('batbub');
+  const cv   = document.getElementById('poof');
+  const btnS = document.getElementById('snd');
+  const btnB = document.getElementById('bato');
+  const amb  = document.getElementById('amb');
+  const ctx  = cv.getContext('2d');
+  const slow = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const SW=120, SH=117, NF=6;                 // la planche : 6 poses
+  const cl=(v,a,b)=>v<a?a:v>b?b:v;
+  const mix=(a,b,t)=>a+(b-a)*t;
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+
+  let W=innerWidth, H=innerHeight, bw=90, bh=88;
+
+  /* le poof est peint dans un tampon basse résolution puis agrandi sans lissage :
+     particules et bouffées gardent la grosseur de pixel du reste du site */
+  const PX = 4;
+  const buf = document.createElement('canvas');
+  const bctx = buf.getContext('2d');
+  function sizeBuf(){ buf.width=Math.max(1,Math.ceil(W/PX)); buf.height=Math.max(1,Math.ceil(H/PX)); }
+
+  function metrics(){
+    W=innerWidth; H=innerHeight;
+    const cs=getComputedStyle(el);
+    bw=parseFloat(cs.width)||90; bh=parseFloat(cs.height)||88;
+    cv.width = Math.round(W*devicePixelRatio);
+    cv.height= Math.round(H*devicePixelRatio);
+    cv.style.width=W+'px'; cv.style.height=H+'px';
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    sizeBuf();
+  }
+  metrics();
+
+  /* bande de vol : sous l'en-tête, au-dessus du bas de page */
+  const bandTop = ()=> H*0.14, bandBot = ()=> H*0.70;
+  /* la barre de boutons occupe la droite à mi-hauteur : on l'évite au perchoir */
+  /* elle s'accroche sous le titre de contact ; si par un cadrage improbable
+     ce titre n'est pas à l'écran, elle retombe sur le bas de la fenêtre */
+  const socle = document.querySelector('#contact h2');
+  const basBloc = document.querySelector('#contact .socials');   /* sous quoi poser ses paroles */
+  const pied    = document.querySelector('footer');
+  function ancre(){
+    if(!socle) return null;
+    /* la boîte du titre fait toute la largeur du bloc alors que les lettres
+       sont centrées : on mesure le texte lui-même, sinon elle se pend à côté */
+    let r;
+    try{ const g = document.createRange(); g.selectNodeContents(socle);
+         r = g.getBoundingClientRect(); }catch(e){ r = null; }
+    if(!r || r.width < 30) r = socle.getBoundingClientRect();
+    if(r.width < 30 || r.bottom < 24 || r.bottom > H - bh*0.55) return null;
+    return r;
+  }
+  /* sous le titre il y a l'adresse et les liens : elle cherche une prise qui
+     ne les recouvre pas, et à défaut celle qui les recouvre le moins */
+  function perchPoint(){
+    const r = ancre();
+    if(!r) return [ rnd(W*0.10, Math.max(W*0.12, W*0.74)), H - bh - 12 ];
+    /* une prise au hasard sous les lettres, en s'autorisant à dépasser d'un
+       quart de son corps aux extrémités pour varier les poses */
+    const x0 = Math.max(2, r.left - bw*0.25);
+    const x1 = Math.min(Math.max(2, W - bw - 2), r.right - bw*0.75);
+    return [ x1 > x0 ? rnd(x0, x1) : (r.left + r.right)/2 - bw/2, r.bottom - 8 ];
+  }
+
+  let x = W*0.78, y = rnd(bandTop(), mix(bandTop(), bandBot(), 0.45));
+  let dir = -1;                                // -1 vers la gauche, +1 vers la droite
+  let energy = 0, lastScroll = -1e9, wing = 0, wingT = 0;
+  let mouth = 0, mouthT = 0, speaking = false;
+  let state = 'idle';                          // idle | perch | gone | off
+  let phase = '';                              // en perch : go | hang | flut
+  let caught = false, entryTo = null;
+  let tx = 0, ty = 0, flutD = 1, arc = 0;      // cible, distance et bosse du trajet en perch
+  let prev = performance.now();
+
+  addEventListener('scroll', ()=>{ lastScroll = performance.now(); }, {passive:true});
+  addEventListener('resize', ()=>{ metrics(); y = cl(y, bandTop(), bandBot()); });
+
+  function atBottom(){
+    const max = document.documentElement.scrollHeight - innerHeight;
+    return max > 10 && scrollY >= max - 4;
+  }
+
+  /* ---------- ses petits faits, débités une fois accrochée ---------- */
+  const FAITS = [
+    "Elle attend au bord des routes. Si un jour tu te promènes de nuit, n'hésite pas à regarder.",
+    "Si tu te promènes la nuit en forêt, tu pourrais très bien rencontrer quelqu'un de grand, en costume.",
+    "Est-ce que tu as déjà essayé de regarder ton miroir à minuit ? Il bouge bizarrement."
+  ];
+  let fIdx = -1, fT = 0, fOn = false, flutT = 0;
+  const lecture = s => 1700 + 52*s.length;     // le temps de la lire sans se presser
+
+  function direFait(){
+    fIdx = (fIdx+1) % FAITS.length;
+    bub.textContent = FAITS[fIdx];
+    bub.classList.remove('court');
+    bub.classList.add('on');
+    fOn = true; fT = 0; speaking = true;
+  }
+  function taire(){
+    bub.classList.remove('on');
+    fOn = false; fT = 0; speaking = false;
+  }
+
+  /* ---------- la dissolution : ses propres pixels s'envolent ---------- */
+  const img = new Image(); img.src = 'img/bat_sheet.png';
+  let parts = [], puffs = [], poofOn = false;
+
+  const puffTile = (()=>{
+    const c=document.createElement('canvas'); c.width=c.height=32;
+    const cc=c.getContext('2d');
+    const g=cc.createRadialGradient(16,16,0,16,16,16);
+    g.addColorStop(0,'rgba(150,120,176,.40)');
+    g.addColorStop(.5,'rgba(96,66,124,.20)');
+    g.addColorStop(1,'rgba(40,20,60,0)');
+    cc.fillStyle=g; cc.fillRect(0,0,32,32);
+    return c;
+  })();
+
+  function burst(flipY){
+    const off=document.createElement('canvas'); off.width=SW; off.height=SH;
+    const oc=off.getContext('2d'); oc.imageSmoothingEnabled=false;
+    oc.drawImage(img, frameIndex()*SW, 0, SW, SH, 0, 0, SW, SH);
+    let d; try{ d = oc.getImageData(0,0,SW,SH).data; }catch(e){ d=null; }
+    parts.length=0; puffs.length=0;
+    const step = Math.max(2, Math.round(SW / Math.max(4, bw/PX)));
+    const sx=bw/SW, sy=bh/SH;
+    if(d){
+      for(let py=0; py<SH; py+=step){
+        for(let px=0; px<SW; px+=step){
+          const i=(py*SW+px)*4;
+          if(d[i+3]<120) continue;
+          const vy = flipY ? SH-1-py : py;            // si elle pendait, le sprite est retourné
+          const up = 1 - vy/SH;
+          parts.push({
+            x:(x+px*sx)/PX, y:(y+vy*sy)/PX,
+            vx:(rnd(-54,54)+dir*22)/PX, vy:-rnd(52,152)/PX,
+            r:d[i], g:d[i+1], b:d[i+2],
+            w: rnd(0.0013,0.0030), ph: Math.random()*6.28,
+            t: -up*190 - Math.random()*130, life: rnd(740,1360)
+          });
+        }
+      }
+    }
+    for(let i=0;i<15;i++) puffs.push({
+      x:(x+rnd(bw*0.12,bw*0.88))/PX, y:(y+rnd(bh*0.2,bh*0.95))/PX,
+      vx: rnd(-34,34)/PX, vy: -rnd(48,124)/PX,
+      t: -Math.random()*190, life: rnd(820,1420), s: rnd(30,78)/PX
+    });
+    poofOn = true;
+  }
+
+  function drawPoof(dt){
+    ctx.clearRect(0,0,W,H);
+    if(!poofOn) return;
+    bctx.clearRect(0,0,buf.width,buf.height);
+    let alive=0;
+    const s=dt/1000;
+    for(const q of puffs){
+      q.t+=dt; if(q.t<0){alive++;continue;} if(q.t>q.life) continue; alive++;
+      const k=q.t/q.life, sz=q.s*(0.6+k*1.6);
+      q.x+=q.vx*s; q.y+=q.vy*s; q.vy*=0.994;
+      bctx.globalAlpha=Math.sin(Math.PI*k)*0.52;
+      bctx.drawImage(puffTile, q.x-sz/2, q.y-sz/2, sz, sz);
+    }
+    for(const q of parts){
+      q.t+=dt; if(q.t<0){alive++;continue;} if(q.t>q.life) continue; alive++;
+      const k=q.t/q.life;
+      q.x += (q.vx + Math.sin(q.t*q.w+q.ph)*(64/PX))*s;
+      q.y += q.vy*s;
+      q.vy *= 0.991;
+      /* ses pixels sont presque noirs : en se détachant ils s'éclairent
+         comme de la cendre, sinon la dissolution ne se verrait pas */
+      const f = cl(k*1.25,0,1);
+      bctx.globalAlpha = cl(1 - k*k, 0, 1);
+      bctx.fillStyle = `rgb(${mix(q.r,198,f)|0},${mix(q.g,168,f)|0},${mix(q.b,216,f)|0})`;
+      bctx.fillRect(q.x|0, q.y|0, 1, 1);
+    }
+    bctx.globalAlpha=1;
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(buf, 0,0, buf.width,buf.height, 0,0, buf.width*PX, buf.height*PX);
+    if(!alive){ poofOn=false; parts.length=0; puffs.length=0; ctx.clearRect(0,0,W,H); }
+  }
+
+  /* ---- la planche : 0/1 ailes basses-hautes, +2 bouche ouverte,
+          4 et 5 ailes rabattues (la pose suspendue) ---- */
+  const hanging = ()=> state==='perch' && phase==='hang';
+  function frameIndex(){ return hanging() ? (4 + (mouth?1:0)) : (wing + (mouth?2:0)); }
+  function show(v){ el.classList.toggle('on', v); }
+
+  function reappear(){
+    y = rnd(bandTop(), bandBot());
+    if(Math.random() < 0.4) dir = -dir;
+  }
+
+  function step(now){
+    const dt = Math.min(100, now-prev); prev=now;
+
+    if(state==='idle' || state==='perch'){
+      const active = (now-lastScroll) < 150;
+      energy = cl(energy + (active ? dt/1600 : -dt/900), 0, 1);
+      const sp = energy*energy;
+
+      /* ---- bascule vers le perchoir, et retour ---- */
+      if(state==='idle' && entryTo===null && atBottom() && (now-lastScroll)>420){
+        state='perch'; phase='go'; [tx,ty]=perchPoint(); flutD=Math.abs(tx-x)||1;
+        fIdx=-1; fT=0; flutT=0; taire();
+      } else if(state==='perch' && !atBottom()){
+        state='idle'; phase=''; arc=0; taire(); energy=Math.max(energy,0.1);
+        y=cl(y,bandTop(),bandBot());
+      }
+
+      if(state==='perch'){
+        if(phase==='go' || phase==='flut'){
+          const k = Math.min(1, dt/520);
+          const ox = x;
+          x += (tx-x)*k;
+          y += (ty-y)*k;
+          /* elle ne glisse pas d'une prise à l'autre : elle remonte un peu */
+          arc = Math.sin(Math.PI * cl(1 - Math.abs(tx-x)/flutD, 0, 1)) * 26;
+          if(Math.abs(tx-x)>3) dir = (tx-ox)>0 ? 1 : -1;
+          wingT += dt; if(wingT > 92){ wingT=0; wing ^= 1; }   // elle bat vite en manœuvre
+          if(Math.abs(tx-x)<2 && Math.abs(ty-y)<2){ x=tx; y=ty; arc=0; phase='hang'; }
+        } else {
+          /* accrochée : elle reste collée au bord du titre quoi qu'il arrive,
+             elle se balance, elle parle, et de temps en temps elle lâche prise */
+          const r = ancre();
+          if(r){ y = r.bottom - 8; x = cl(x, 2, Math.max(2, W - bw - 2)); }
+          else { y = H - bh - 12; }
+          flutT += dt;
+          if(fOn){
+            fT += dt;
+            if(fT > lecture(FAITS[fIdx])) taire();
+          } else {
+            fT += dt;
+            if(fT > 2400 && flutT < 13000) direFait();
+          }
+          if(!fOn && flutT > 13000){
+            phase='flut'; flutT=0; fT=0;
+            [tx,ty] = perchPoint(); flutD = Math.max(60, Math.abs(tx-x));
+          }
+        }
+      }
+
+      /* ---- vol libre ---- */
+      if(state==='idle'){
+        arc = 0;
+        if(entryTo !== null){
+          x += (entryTo - x) * Math.min(1, dt/420);
+          if(Math.abs(entryTo - x) < 2){ x = entryTo; entryTo = null; }
+        } else if(sp > 0.006){
+          x += dir * sp * 860 * dt/1000;
+          if(x > W + 10){ x = -bw-10; reappear(); }
+          else if(x < -bw-10){ x = W + 10; reappear(); }
+        }
+        y = cl(y, bandTop(), bandBot());
+        wingT += dt;
+        if(wingT > mix(186, 84, sp)){ wingT = 0; wing ^= 1; }
+      }
+
+      if(speaking){
+        mouthT += dt;
+        if(mouthT > rnd(90,170)){ mouthT=0; mouth ^= 1; }
+      } else mouth = 0;
+
+      /* ---- la pose à l'écran ---- */
+      const hang = hanging();
+      const sp2  = state==='perch' ? 0 : sp;
+      const amp  = (1 - 0.78*sp2) * (hang ? 0.55 : 1);
+      /* accrochée elle pivote autour de ses pattes et ne glisse pas : sans ça
+         elle sort de la prise choisie et vient mordre sur l'adresse */
+      const hx   = hang ? 0 : Math.sin(now*0.00117)*4.6*amp;
+      const hov  = (Math.sin(now*0.00163)*5.4 + Math.sin(now*0.00071)*2.8)*amp;
+      const tilt = hang ? Math.sin(now*0.0011)*2.6 : 0;   // le balancement du dormeur
+      /* scaleY(-1) autour du point d'accroche renvoie l'élément d'une hauteur
+         vers le bas : on l'annule, sinon elle pend sous le bord de l'écran */
+      el.style.transform =
+        `translate3d(${(x+hx).toFixed(1)}px,${(hang ? y-bh : y+hov-arc).toFixed(1)}px,0)`
+        + (hang ? ` scaleY(-1) rotate(${tilt.toFixed(2)}deg)` : '')
+        + ` scaleX(${dir<0?-1:1})`;
+      el.style.backgroundPosition = `${(frameIndex()*100/(NF-1)).toFixed(4)}% 0`;
+
+      /* on ne l'attrape qu'à l'arrêt : pas de clic accidentel en plein vol */
+      const still = sp < 0.07 || state==='perch';
+      el.style.pointerEvents = still ? 'auto' : 'none';
+      el.classList.toggle('grab', still);
+
+      /* la bulle : "attrape-moi" en vol, ses faits une fois accrochée */
+      const montreAttrape = !caught && still && state==='idle';
+      if(montreAttrape && !fOn){
+        bub.textContent = 'attrape-moi';
+        bub.classList.add('court','on');
+      } else if(!fOn && state==='idle'){
+        bub.classList.remove('on');
+      }
+      if(bub.classList.contains('on')){
+        const bwid = bub.offsetWidth || 110, bhei = bub.offsetHeight || 40;
+        const bx = x + hx, by = y + (hang?0:hov-arc);
+        if(hang){
+          /* accrochée au titre, elle parle vers le bas : la bulle se range dans
+             la bande libre sous le bloc contact, pour ne masquer ni le titre,
+             ni l'adresse, ni les liens. Sa pointe la désigne depuis en dessous. */
+          bub.classList.remove('g','d'); bub.classList.add('b');
+          const sr = basBloc ? basBloc.getBoundingClientRect() : null;
+          const pr = pied ? pied.getBoundingClientRect() : null;
+          /* centrée dans la bande libre entre les liens et le pied de page :
+             collée sous les liens elle mordait sur le copyright des écrans courts */
+          let souhait;
+          if(sr && pr && pr.top - sr.bottom > bhei + 10)
+            souhait = sr.bottom + (pr.top - sr.bottom - bhei)/2;
+          else
+            souhait = (sr ? sr.bottom : by + bh) + 14;
+          const top  = cl(Math.max(souhait, by + bh + 10), 10, Math.max(10, H - bhei - 10));
+          const left = cl(bx + bw*0.5 - 24, 10, Math.max(10, W - bwid - 10));
+          bub.style.transform = `translate3d(${left.toFixed(1)}px,${top.toFixed(1)}px,0)`;
+          bub.style.setProperty('--tip', cl(bx + bw*0.5 - left, 14, bwid-14).toFixed(0)+'px');
+        } else {
+          bub.classList.remove('g','d','b');
+          const aim  = bx + bw*0.5;
+          const left = cl(aim - 24, 10, Math.max(10, W - bwid - 10));
+          const top  = by - bhei - 12;
+          bub.style.transform = `translate3d(${left.toFixed(1)}px,${top.toFixed(1)}px,0)`;
+          bub.style.setProperty('--tip', cl(aim-left, 14, bwid-14).toFixed(0)+'px');
+        }
+      }
+    }
+
+    drawPoof(dt);
+    requestAnimationFrame(step);
+  }
+
+  /* ---- l'attraper : fumée, puis la voix ---- */
+  el.addEventListener('click', ()=>{
+    if(state!=='idle' && state!=='perch') return;
+    const flip = hanging();
+    caught = true; state='gone'; phase=''; taire();
+    show(false); el.style.pointerEvents='none';
+    burst(flip);
+    play(true);
+  });
+
+  /* ---- le son ----
+     On sépare ce que la personne veut de ce que le navigateur arrive à jouer :
+     si le fichier manque ou que la lecture échoue, le bouton doit malgré tout
+     pouvoir la faire revenir, sinon elle disparaît pour de bon. */
+  let wanted = false;
+  function paintS(){ btnS.dataset.on = wanted?'1':'0'; btnS.setAttribute('aria-pressed', wanted?'true':'false'); }
+  function play(fromStart){
+    wanted = true; paintS();
+    const fini = amb.ended || (amb.duration && amb.currentTime >= amb.duration - 0.25);
+    if(fromStart || fini) try{ amb.currentTime = 0; }catch(e){}
+    const pr = amb.play();
+    if(pr && pr.catch) pr.catch(()=>{});
+  }
+  function revient(){
+    if(state!=='gone') return;
+    state='idle'; phase=''; reappear();
+    x = (dir<0 ? W+bw+6 : -bw-6);
+    entryTo = (dir<0 ? W*0.62 : W*0.26);
+    show(true);
+  }
+  function stop(){
+    wanted = false; paintS();
+    try{ amb.pause(); }catch(e){}
+    revient();                       /* elle revient par le bord, sans rien demander */
+  }
+  btnS.addEventListener('click', ()=>{ wanted ? stop() : play(false); });
+  /* la bande ne boucle pas : à la fin, elle reparaît pour qu'on puisse la relancer */
+  amb.addEventListener('ended', ()=>{ wanted=false; paintS(); revient(); });
+  paintS();
+
+  /* ---- la retirer complètement, pour qui ne veut pas d'elle ---- */
+  let visible = true;
+  function paintB(){ btnB.dataset.on = visible?'1':'0'; btnB.setAttribute('aria-pressed', visible?'true':'false'); }
+  btnB.addEventListener('click', ()=>{
+    if(visible){
+      visible=false;
+      state='off'; phase=''; taire();
+      show(false); el.style.pointerEvents='none';
+      poofOn=false; parts.length=0; puffs.length=0; ctx.clearRect(0,0,W,H);
+    } else {
+      visible=true;
+      state='idle'; phase=''; caught=false; energy=0;
+      reappear();
+      x = (dir<0 ? W+bw+6 : -bw-6);
+      entryTo = (dir<0 ? W*0.62 : W*0.26);
+      show(true);
+    }
+    paintB();
+  });
+  paintB();
+
+  /* premier geste de la souris : on prépare le flux pour que la voix parte sec */
+  const warm = ()=>{ try{ amb.load(); }catch(e){} };
+  addEventListener('pointermove', warm, {once:true, passive:true});
+
+  img.decode ? img.decode().then(start).catch(start) : (img.onload = start);
+  function start(){
+    metrics(); show(true);
+    if(slow){ el.style.transform=`translate3d(${x}px,${y}px,0)`; bub.classList.add('on'); return; }
+    requestAnimationFrame(step);
+  }
+})();
+</script>
+</body>
+</html>
+
+</body></html>
