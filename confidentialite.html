@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Politique de confidentialité — Phironix</title>
+<meta name="description" content="Comment vos informations sont traitées sur le site de François — Phironix.">
+<style>
+@font-face{font-family:"Dracula";src:url("fonts/Dracula.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Scribbles";src:url("fonts/HorrorScribbles.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Inter24";src:url("fonts/Inter24pt-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+
+:root{
+  --green:#73B167; --coral:#FF715B; --plum:#290F46;
+  --ink:#06040A; --bone:#E8DCC6; --fg:#EDE4DA; --fg-dim:#9A8E93;
+  --dim:rgba(237,228,218,.68); --faint:rgba(237,228,218,.42);
+  --bord:rgba(237,228,218,.13);
+  --maxw:860px; --gut:clamp(18px,4vw,48px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--fg);
+  font-family:"Inter24",system-ui,sans-serif;font-weight:700;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.7}
+img{display:block;max-width:100%}
+a{color:inherit}
+
+/* ---- le décor, en version tenue : la cathédrale reste sur le portfolio ---- */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(70% 55% at 50% -8%, rgba(142,26,20,.30) 0%, transparent 62%),
+    radial-gradient(48% 42% at 88% 14%, rgba(255,113,91,.10) 0%, transparent 70%),
+    radial-gradient(60% 50% at 10% 92%, rgba(115,177,103,.09) 0%, transparent 70%),
+    linear-gradient(180deg,#140621 0%,#0C0414 45%,#06040A 100%)}
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.055;mix-blend-mode:overlay}
+#vig{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 48%,rgba(0,0,0,.72) 100%)}
+
+.wrap{position:relative;z-index:2;max-width:var(--maxw);margin:0 auto;padding:0 var(--gut)}
+
+/* ---- en-tête ---- */
+header{position:sticky;top:0;z-index:40;background:rgba(7,3,7,.78);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,113,91,.2)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.brand{font-family:"Dracula",serif;font-size:24px;letter-spacing:.06em;
+  text-decoration:none;color:var(--bone)}
+header nav{display:flex;gap:clamp(12px,2.6vw,26px)}
+header nav a{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  text-decoration:none;color:var(--fg-dim);transition:color .25s;white-space:nowrap}
+header nav a:hover,header nav a[aria-current]{color:var(--coral)}
+@media(max-width:600px){header nav a:not([aria-current]):not(.toujours){display:none}}
+
+/* ---- les accents, posés par-dessus la lettre ----
+   Dracula reste le fichier d'origine, intact, sans aucune lettre accentuée.
+   Là où il en faut un, la lettre de base est affichée telle quelle et l'accent
+   est dessiné au-dessus en CSS, à la façon de la cédille de FRANÇOIS. */
+/* Dracula : capitales hautes de .695em, ligne de base à .75em du haut de la
+   boîte. Le line-height:1 est indispensable, sinon l'accent se cale sur
+   l'interligne du titre et part flotter au-dessus. */
+.a{position:relative;display:inline-block;line-height:1;vertical-align:baseline}
+.a::before,.a::after{content:"";position:absolute;background:currentColor;pointer-events:none}
+.a.ai::after{width:.21em;height:.058em;left:50%;top:-.028em;transform:translateX(-56%) rotate(-27deg)}
+.a.gr::after{width:.21em;height:.058em;left:50%;top:-.028em;transform:translateX(-44%) rotate(27deg)}
+.a.ci::before{width:.15em;height:.055em;left:50%;top:-.024em;transform:translateX(-92%) rotate(-33deg)}
+.a.ci::after {width:.15em;height:.055em;left:50%;top:-.024em;transform:translateX(-8%) rotate(33deg)}
+/* la cédille est la virgule de Dracula, glissée sous la lettre : le bas des
+   capitales est à .006em de la ligne de base, donc un bottom positif la
+   cacherait derrière la lettre — d'où la valeur négative. */
+.a.ce::after{content:",";background:none;width:auto;height:auto;
+  left:50%;top:auto;bottom:-.055em;line-height:1;transform:translateX(-54%) scale(.88)}
+/* Le h1 porte un text-shadow (halo rouge + ombre dure de 4px vers le bas) dont
+   les accents dessinés, qui sont des fonds et non du texte, ne héritent pas :
+   sans ça le chapeau du Ê reste plat au milieu de lettres en relief. Le
+   box-shadow d'un élément pivoté pivote avec lui, donc pour retrouver un
+   décalage (0, d) à l'écran sur un accent tourné de θ, on pose (d·sinθ, d·cosθ).
+   Le halo, lui, est circulaire : la rotation ne le change pas. */
+h1 .a::before,h1 .a::after{box-shadow:0 0 34px rgba(220,60,40,.45)}
+h1 .a.ai::after{box-shadow:0 0 34px rgba(220,60,40,.45),-1.8px 3.6px 0 rgba(0,0,0,.55)}
+h1 .a.gr::after{box-shadow:0 0 34px rgba(220,60,40,.45), 1.8px 3.6px 0 rgba(0,0,0,.55)}
+h1 .a.ci::before{box-shadow:0 0 34px rgba(220,60,40,.45),-2.2px 3.4px 0 rgba(0,0,0,.55)}
+h1 .a.ci::after {box-shadow:0 0 34px rgba(220,60,40,.45), 2.2px 3.4px 0 rgba(0,0,0,.55)}
+/* la cédille est du texte : elle hérite du text-shadow toute seule */
+h1 .a.ce::after{box-shadow:none}
+
+/* un glyphe que Dracula ne possède pas : on l'emprunte à la police de texte */
+.hors{font-family:"Inter24",system-ui,sans-serif;font-size:.84em}
+
+/* ---- titrage ---- */
+.tete{padding:clamp(44px,8vw,86px) 0 clamp(22px,4vw,36px)}
+.retour{display:inline-block;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--fg-dim);text-decoration:none;transition:color .25s}
+.retour:hover{color:var(--coral)}
+.badge{margin-top:26px;font-family:"Dracula",serif;font-size:clamp(15px,1.9vw,19px);
+  letter-spacing:.1em;color:var(--coral)}
+h1{font-family:"Dracula",serif;font-weight:400;
+  font-size:clamp(40px,8.4vw,86px);line-height:.96;color:var(--bone);margin:4px 0 0;
+  text-shadow:0 0 34px rgba(220,60,40,.45),0 4px 0 rgba(0,0,0,.55)}
+h1 em{font-style:normal;color:var(--coral)}
+.maj{margin:16px 0 0;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-dim)}
+.chapo{margin:18px 0 0;max-width:64ch;font-size:clamp(13.5px,1.5vw,15.5px);color:var(--dim)}
+
+/* ---- cartes ---- */
+main{padding-bottom:clamp(30px,6vw,56px)}
+.card{position:relative;margin:18px 0;padding:clamp(20px,3.4vw,32px);
+  background:rgba(14,6,22,.62);border:1px solid var(--bord);border-radius:14px;
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.card h2{font-family:"Dracula",serif;font-weight:400;
+  font-size:clamp(24px,3.8vw,38px);line-height:1.05;color:var(--bone);margin:0 0 6px}
+.card h3{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);
+  margin:26px 0 6px}
+.card p{margin:12px 0 0;font-size:clamp(13.5px,1.45vw,15px);color:var(--dim)}
+.card p.note{color:var(--faint);font-size:13px}
+.card ul{margin:12px 0 0;padding-left:20px;color:var(--dim);font-size:clamp(13.5px,1.45vw,15px)}
+.card li{margin:6px 0}
+.card a{color:var(--coral);text-decoration:none;border-bottom:1px solid rgba(255,113,91,.35)}
+.card a:hover{border-bottom-color:var(--coral)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;
+  background:rgba(255,113,91,.12);padding:2px 6px;border-radius:5px;color:#FFBFB2}
+
+dl{margin:14px 0 0;display:grid;grid-template-columns:minmax(130px,auto) 1fr;gap:9px 20px;
+  font-size:clamp(13.5px,1.45vw,15px)}
+dt{color:var(--green);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-top:3px}
+dd{margin:0;color:var(--dim)}
+@media(max-width:560px){dl{grid-template-columns:1fr;gap:2px 0}dd{margin-bottom:12px}}
+
+table{width:100%;border-collapse:collapse;margin:16px 0 0;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--bord);
+  vertical-align:top;color:var(--dim)}
+th{color:var(--green);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  border-bottom-color:rgba(115,177,103,.3)}
+@media(max-width:620px){th,td{padding:8px 6px;font-size:12.5px}}
+
+/* ---- pied ---- */
+footer{position:relative;z-index:2;padding:44px 0 64px;text-align:center;
+  border-top:1px solid var(--bord);margin-top:36px}
+footer .wrap{display:flex;flex-direction:column;gap:14px;align-items:center}
+footer span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-dim)}
+footer nav{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+footer nav a{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--fg-dim);text-decoration:none;transition:color .25s}
+footer nav a:hover{color:var(--coral)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+#grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px}
+</style>
+</head>
+<body>
+
+<div id="bg"></div><div id="grain"></div><div id="vig"></div>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html">PHIRONIX</a>
+    <nav>
+      <a href="index.html" class="toujours">Portfolio</a>
+      <a href="devis.html">Devis</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html" aria-current="page">Confidentialité</a>
+      <a href="cookies.html">Cookies</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="tete">
+  <a class="retour" href="index.html">← Retour au portfolio</a>
+  <div class="badge" aria-label="Vos données">Vos donn<span class="a ai">e</span>es</div>
+  <h1 aria-label="Politique de confidentialité">Politique de confidentialit<span class="a ai">e</span></h1>
+  <p class="maj">Dernière mise à jour : 7 novembre 2026</p>
+  <p class="chapo">Ce site ne vit pas de vos données. Il n'y a ni publicité, ni mesure d'audience, ni revente d'adresses. La seule chose que je recueille, c'est ce que vous écrivez vous-même dans le formulaire de demande de devis, et ça me sert à vous répondre.</p>
+</div>
+
+<main>
+  <section class="card">
+    <h2>Qui est responsable</h2>
+    <p>Le responsable du traitement est François-Antonio Kouamé, entrepreneur individuel exerçant sous le nom commercial Phironix, dont les coordonnées complètes figurent dans les <a href="mentions-legales.html">mentions légales</a>.</p>
+    <p>Pour toute question sur vos données, écrivez à <a href="mailto:francois.kouame.job@gmail.com">francois.kouame.job@gmail.com</a>.</p>
+  </section>
+
+  <section class="card">
+    <h2 aria-label="Ce qui est collecté, et pourquoi">Ce qui est collect<span class="a ai">e</span>, et pourquoi</h2>
+
+    <h3>En consultant le site</h3>
+    <p>Rien n'est demandé et aucun compte n'est créé. Comme pour tout site, l'hébergeur enregistre des journaux techniques de connexion, dont votre adresse IP, à des fins de fonctionnement et de sécurité. Ces journaux ne me sont pas transmis et je n'y ai pas accès.</p>
+
+    <h3>En remplissant la demande de devis</h3>
+    <p>Le formulaire me transmet uniquement ce que vous y saisissez :</p>
+    <ul>
+      <li>votre nom et votre adresse e-mail, qui sont les deux seuls champs indispensables ;</li>
+      <li>facultativement, le lien de votre site ou de votre chaîne, et votre profil (créateur, entreprise, agence, association, particulier) ;</li>
+      <li>les éléments de cadrage du projet : format, volume, durée, délai, budget indicatif et vos précisions libres.</li>
+    </ul>
+    <p><strong>Finalité :</strong> étudier votre demande et vous répondre avec un devis chiffré ou des questions. <strong>Base légale :</strong> l'exécution de mesures précontractuelles prises à votre demande, au sens de l'article 6.1.b du RGPD. Rien n'est utilisé à d'autres fins, et vous ne serez inscrit à aucune liste de diffusion.</p>
+  </section>
+
+  <section class="card">
+    <h2>Qui d'autre intervient</h2>
+    <p>Trois prestataires techniques interviennent dans le fonctionnement du site. Aucun n'a le droit d'utiliser vos données pour son propre compte.</p>
+    <table>
+      <tr><th>Prestataire</th><th>Rôle</th><th>Données concernées</th></tr>
+      <tr>
+        <td>Web3Forms<br>(Web3Creative, Inde)</td>
+        <td>Achemine le formulaire jusqu'à ma boîte mail</td>
+        <td>Le contenu du formulaire. Leur infrastructure s'appuie sur Amazon&nbsp;Web&nbsp;Services, Cloudflare et Hetzner. Un filtrage anti-spam (CleanTalk, Akismet) peut recevoir votre adresse IP et votre adresse e-mail.</td>
+      </tr>
+      <tr>
+        <td>GitHub Pages<br>(GitHub, Inc., États-Unis)</td>
+        <td>Héberge les pages du site</td>
+        <td>Journaux techniques de connexion, dont l'adresse IP</td>
+      </tr>
+      <tr>
+        <td>YouTube<br>(Google Ireland Ltd.)</td>
+        <td>Lit les vidéos du portfolio</td>
+        <td>Uniquement si vous cliquez pour lancer une vidéo. Voir la <a href="cookies.html">politique relative aux cookies</a>.</td>
+      </tr>
+    </table>
+    <p class="note">Les polices d'écriture, les images du décor et la bande sonore sont servies depuis le site lui-même. Aucune ressource n'est chargée depuis un serveur tiers à l'ouverture d'une page, et aucun outil de mesure d'audience n'est installé.</p>
+  </section>
+
+  <section class="card">
+    <h2 aria-label="Transferts hors de l'Union européenne">Transferts hors de l'Union europ<span class="a ai">e</span>enne</h2>
+    <p>Web3Forms est établi en Inde et GitHub aux États-Unis. Les transferts de données vers ces pays sont encadrés par les clauses contractuelles types de la Commission européenne, prévues dans l'accord de sous-traitance de ces prestataires.</p>
+  </section>
+
+  <section class="card">
+    <h2 aria-label="Combien de temps vos données sont conservées">Combien de temps vos donn<span class="a ai">e</span>es sont conserv<span class="a ai">e</span>es</h2>
+    <table>
+      <tr><th>Donnée</th><th>Durée</th></tr>
+      <tr><td>Demande sans suite</td><td>3 ans à compter de notre dernier échange, puis suppression</td></tr>
+      <tr><td>Demande devenue un projet</td><td>Durée de la relation, puis les durées légales de conservation comptable</td></tr>
+      <tr><td>Copie chez Web3Forms</td><td>3 ans au maximum à compter de l'envoi, puis suppression automatique de leur côté</td></tr>
+      <tr><td>Journaux de l'hébergeur</td><td>Durée courte, fixée par l'hébergeur</td></tr>
+    </table>
+    <p>Vous pouvez demander la suppression de votre demande avant ces échéances, et elle sera faite.</p>
+  </section>
+
+  <section class="card">
+    <h2>Vos droits</h2>
+    <p>Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité sur vos données. Pour les exercer, un simple message à <a href="mailto:francois.kouame.job@gmail.com">francois.kouame.job@gmail.com</a> suffit : pas de formulaire, pas de justification à fournir. Une réponse vous parvient dans un délai d'un mois.</p>
+    <p>Si la réponse ne vous satisfait pas, vous pouvez saisir la Commission nationale de l'informatique et des libertés — 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07 — ou déposer une plainte en ligne sur <a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>.</p>
+  </section>
+
+  <section class="card">
+    <h2>Ce qui n'est pas fait</h2>
+    <ul>
+      <li>Aucune vente, location ni échange de vos données.</li>
+      <li>Aucune prospection commerciale à partir d'une demande de devis.</li>
+      <li>Aucun profilage et aucune décision automatisée.</li>
+      <li>Aucun suivi de votre navigation, sur ce site comme ailleurs.</li>
+    </ul>
+  </section>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>François — Phironix · Monteur vidéo &amp; motion designer</span>
+    <nav>
+      <a href="index.html" class="toujours">Portfolio</a>
+      <a href="devis.html">Devis</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html" aria-current="page">Confidentialité</a>
+      <a href="cookies.html">Cookies</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

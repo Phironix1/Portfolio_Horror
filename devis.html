@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demande de devis — François / Phironix</title>
+<meta name="description" content="Cadrez votre projet vidéo en cinq minutes : format, volume, délai, budget. Réponse sous 48 h avec un devis chiffré.">
+<style>
+@font-face{font-family:"Dracula";src:url("fonts/Dracula.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Scribbles";src:url("fonts/HorrorScribbles.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Inter24";src:url("fonts/Inter24pt-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+
+:root{
+  --green:#73B167; --coral:#FF715B; --plum:#290F46;
+  --ink:#06040A; --bone:#E8DCC6; --fg:#EDE4DA; --fg-dim:#9A8E93;
+  --dim:rgba(237,228,218,.68); --faint:rgba(237,228,218,.42);
+  --bord:rgba(237,228,218,.13);
+  --maxw:860px; --gut:clamp(18px,4vw,48px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--fg);
+  font-family:"Inter24",system-ui,sans-serif;font-weight:700;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.7}
+img{display:block;max-width:100%}
+a{color:inherit}
+
+/* ---- le décor, en version tenue : la cathédrale reste sur le portfolio ---- */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(70% 55% at 50% -8%, rgba(142,26,20,.30) 0%, transparent 62%),
+    radial-gradient(48% 42% at 88% 14%, rgba(255,113,91,.10) 0%, transparent 70%),
+    radial-gradient(60% 50% at 10% 92%, rgba(115,177,103,.09) 0%, transparent 70%),
+    linear-gradient(180deg,#140621 0%,#0C0414 45%,#06040A 100%)}
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.055;mix-blend-mode:overlay}
+#vig{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 48%,rgba(0,0,0,.72) 100%)}
+
+.wrap{position:relative;z-index:2;max-width:var(--maxw);margin:0 auto;padding:0 var(--gut)}
+
+/* ---- en-tête ---- */
+header{position:sticky;top:0;z-index:40;background:rgba(7,3,7,.78);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,113,91,.2)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.brand{font-family:"Dracula",serif;font-size:24px;letter-spacing:.06em;
+  text-decoration:none;color:var(--bone)}
+header nav{display:flex;gap:clamp(12px,2.6vw,26px)}
+header nav a{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  text-decoration:none;color:var(--fg-dim);transition:color .25s;white-space:nowrap}
+header nav a:hover,header nav a[aria-current]{color:var(--coral)}
+@media(max-width:600px){header nav a:not([aria-current]):not(.toujours){display:none}}
+
+/* ---- les accents, posés par-dessus la lettre ----
+   Dracula reste le fichier d'origine, intact, sans aucune lettre accentuée.
+   Là où il en faut un, la lettre de base est affichée telle quelle et l'accent
+   est dessiné au-dessus en CSS, à la façon de la cédille de FRANÇOIS. */
+/* Dracula : capitales hautes de .695em, ligne de base à .75em du haut de la
+   boîte. Le line-height:1 est indispensable, sinon l'accent se cale sur
+   l'interligne du titre et part flotter au-dessus. */
+.a{position:relative;display:inline-block;line-height:1;vertical-align:baseline}
+.a::before,.a::after{content:"";position:absolute;background:currentColor;pointer-events:none}
+.a.ai::after{width:.21em;height:.058em;left:50%;top:-.028em;transform:translateX(-56%) rotate(-27deg)}
+.a.gr::after{width:.21em;height:.058em;left:50%;top:-.028em;transform:translateX(-44%) rotate(27deg)}
+.a.ci::before{width:.15em;height:.055em;left:50%;top:-.024em;transform:translateX(-92%) rotate(-33deg)}
+.a.ci::after {width:.15em;height:.055em;left:50%;top:-.024em;transform:translateX(-8%) rotate(33deg)}
+/* la cédille est la virgule de Dracula, glissée sous la lettre : le bas des
+   capitales est à .006em de la ligne de base, donc un bottom positif la
+   cacherait derrière la lettre — d'où la valeur négative. */
+.a.ce::after{content:",";background:none;width:auto;height:auto;
+  left:50%;top:auto;bottom:-.055em;line-height:1;transform:translateX(-54%) scale(.88)}
+/* Le h1 porte un text-shadow (halo rouge + ombre dure de 4px vers le bas) dont
+   les accents dessinés, qui sont des fonds et non du texte, ne héritent pas :
+   sans ça le chapeau du Ê reste plat au milieu de lettres en relief. Le
+   box-shadow d'un élément pivoté pivote avec lui, donc pour retrouver un
+   décalage (0, d) à l'écran sur un accent tourné de θ, on pose (d·sinθ, d·cosθ).
+   Le halo, lui, est circulaire : la rotation ne le change pas. */
+h1 .a::before,h1 .a::after{box-shadow:0 0 34px rgba(220,60,40,.45)}
+h1 .a.ai::after{box-shadow:0 0 34px rgba(220,60,40,.45),-1.8px 3.6px 0 rgba(0,0,0,.55)}
+h1 .a.gr::after{box-shadow:0 0 34px rgba(220,60,40,.45), 1.8px 3.6px 0 rgba(0,0,0,.55)}
+h1 .a.ci::before{box-shadow:0 0 34px rgba(220,60,40,.45),-2.2px 3.4px 0 rgba(0,0,0,.55)}
+h1 .a.ci::after {box-shadow:0 0 34px rgba(220,60,40,.45), 2.2px 3.4px 0 rgba(0,0,0,.55)}
+/* la cédille est du texte : elle hérite du text-shadow toute seule */
+h1 .a.ce::after{box-shadow:none}
+
+/* un glyphe que Dracula ne possède pas : on l'emprunte à la police de texte */
+.hors{font-family:"Inter24",system-ui,sans-serif;font-size:.84em}
+
+/* ---- titrage ---- */
+.tete{padding:clamp(44px,8vw,86px) 0 clamp(22px,4vw,36px)}
+.retour{display:inline-block;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--fg-dim);text-decoration:none;transition:color .25s}
+.retour:hover{color:var(--coral)}
+.badge{margin-top:26px;font-family:"Dracula",serif;font-size:clamp(15px,1.9vw,19px);
+  letter-spacing:.1em;color:var(--coral)}
+h1{font-family:"Dracula",serif;font-weight:400;
+  font-size:clamp(40px,8.4vw,86px);line-height:.96;color:var(--bone);margin:4px 0 0;
+  text-shadow:0 0 34px rgba(220,60,40,.45),0 4px 0 rgba(0,0,0,.55)}
+h1 em{font-style:normal;color:var(--coral)}
+.maj{margin:16px 0 0;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-dim)}
+.chapo{margin:18px 0 0;max-width:64ch;font-size:clamp(13.5px,1.5vw,15.5px);color:var(--dim)}
+
+/* ---- cartes ---- */
+main{padding-bottom:clamp(30px,6vw,56px)}
+.card{position:relative;margin:18px 0;padding:clamp(20px,3.4vw,32px);
+  background:rgba(14,6,22,.62);border:1px solid var(--bord);border-radius:14px;
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.card h2{font-family:"Dracula",serif;font-weight:400;
+  font-size:clamp(24px,3.8vw,38px);line-height:1.05;color:var(--bone);margin:0 0 6px}
+.card h3{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);
+  margin:26px 0 6px}
+.card p{margin:12px 0 0;font-size:clamp(13.5px,1.45vw,15px);color:var(--dim)}
+.card p.note{color:var(--faint);font-size:13px}
+.card ul{margin:12px 0 0;padding-left:20px;color:var(--dim);font-size:clamp(13.5px,1.45vw,15px)}
+.card li{margin:6px 0}
+.card a{color:var(--coral);text-decoration:none;border-bottom:1px solid rgba(255,113,91,.35)}
+.card a:hover{border-bottom-color:var(--coral)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;
+  background:rgba(255,113,91,.12);padding:2px 6px;border-radius:5px;color:#FFBFB2}
+
+dl{margin:14px 0 0;display:grid;grid-template-columns:minmax(130px,auto) 1fr;gap:9px 20px;
+  font-size:clamp(13.5px,1.45vw,15px)}
+dt{color:var(--green);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-top:3px}
+dd{margin:0;color:var(--dim)}
+@media(max-width:560px){dl{grid-template-columns:1fr;gap:2px 0}dd{margin-bottom:12px}}
+
+table{width:100%;border-collapse:collapse;margin:16px 0 0;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--bord);
+  vertical-align:top;color:var(--dim)}
+th{color:var(--green);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  border-bottom-color:rgba(115,177,103,.3)}
+@media(max-width:620px){th,td{padding:8px 6px;font-size:12.5px}}
+
+/* ---- pied ---- */
+footer{position:relative;z-index:2;padding:44px 0 64px;text-align:center;
+  border-top:1px solid var(--bord);margin-top:36px}
+footer .wrap{display:flex;flex-direction:column;gap:14px;align-items:center}
+footer span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-dim)}
+footer nav{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+footer nav a{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--fg-dim);text-decoration:none;transition:color .25s}
+footer nav a:hover{color:var(--coral)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+#grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px}
+/* ---- le formulaire ---- */
+.intro{margin-top:20px;max-width:66ch}
+.intro p{margin:12px 0 0;font-size:clamp(13.5px,1.5vw,15.5px);color:var(--dim)}
+.intro strong{color:var(--bone)}
+
+.steps{position:sticky;top:60px;z-index:30;display:flex;gap:8px;flex-wrap:wrap;
+  padding:14px 0;margin:0 0 6px;background:linear-gradient(180deg,rgba(6,4,10,.94) 70%,transparent)}
+.pill{font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:7px 12px;
+  border:1px solid var(--bord);border-radius:999px;color:var(--fg-dim);white-space:nowrap}
+.pill.on{color:var(--ink);background:var(--coral);border-color:var(--coral)}
+.pill.done{color:var(--green);border-color:rgba(115,177,103,.45)}
+
+section[data-step]{display:none}
+section[data-step].active{display:block}
+
+.sub{margin:6px 0 0 !important;color:var(--faint) !important;font-size:13.5px !important}
+.hint{margin:10px 0 0;font-size:12.5px;color:var(--faint)}
+
+label.f{display:block;margin:24px 0 10px;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--green)}
+label.f i{font-style:normal;color:var(--coral)}
+
+input[type=text],input[type=email],input[type=number],input[type=url],select,textarea{
+  width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--bord);
+  background:rgba(6,3,10,.6);color:var(--fg);
+  font-family:"Inter24",system-ui,sans-serif;font-weight:700;font-size:14.5px;
+  transition:border-color .2s,background .2s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--coral);
+  background:rgba(6,3,10,.85)}
+input::placeholder,textarea::placeholder{color:rgba(237,228,218,.3)}
+textarea{min-height:104px;resize:vertical;line-height:1.6}
+select{appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--fg-dim) 50%),
+                   linear-gradient(135deg,var(--fg-dim) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:40px}
+select option{background:#140621;color:var(--fg)}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.row{grid-template-columns:1fr}}
+
+.grid{display:grid;gap:12px;margin-top:4px}
+.grid.c2{grid-template-columns:1fr 1fr}
+.grid.c3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:720px){.grid.c3{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.grid.c2,.grid.c3{grid-template-columns:1fr}}
+
+.opt{display:block;width:100%;text-align:left;cursor:pointer;
+  padding:15px 16px;border-radius:12px;border:1px solid var(--bord);
+  background:rgba(6,3,10,.5);color:var(--fg);font-family:inherit;font-weight:700;
+  transition:border-color .2s,background .2s,transform .12s}
+.opt b{display:block;font-size:14.5px;color:var(--bone)}
+.opt small{display:block;margin-top:5px;font-size:12.5px;line-height:1.5;
+  color:var(--faint);font-weight:400}
+.opt:hover{border-color:rgba(255,113,91,.5)}
+.opt:active{transform:scale(.99)}
+.opt.sel{border-color:var(--coral);background:rgba(255,113,91,.1)}
+.opt.sel b{color:var(--coral)}
+
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+.chip{cursor:pointer;padding:9px 14px;border-radius:999px;border:1px solid var(--bord);
+  background:rgba(6,3,10,.5);color:var(--dim);
+  font-family:inherit;font-weight:700;font-size:12.5px;transition:all .2s}
+.chip:hover{border-color:rgba(255,113,91,.5);color:var(--fg)}
+.chip.sel{border-color:var(--green);background:rgba(115,177,103,.14);color:var(--green)}
+
+.nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{cursor:pointer;padding:13px 24px;border-radius:999px;font-family:inherit;font-weight:700;
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:all .22s}
+.btn-main{background:var(--coral);border:1px solid var(--coral);color:#1A0604}
+.btn-main:hover{background:#FF8A77;border-color:#FF8A77}
+.btn-main:disabled{opacity:.34;cursor:not-allowed;background:transparent;color:var(--fg-dim);
+  border-color:var(--bord)}
+.btn-ghost{background:transparent;border:1px solid var(--bord);color:var(--fg-dim)}
+.btn-ghost:hover{border-color:var(--coral);color:var(--coral)}
+.saved{font-size:11px;color:var(--green);letter-spacing:.1em}
+
+.fiche{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+@media(max-width:680px){.fiche{grid-template-columns:1fr 1fr}}
+@media(max-width:440px){.fiche{grid-template-columns:1fr}}
+.fiche span{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--green)}
+.fiche p{margin:4px 0 0 !important;font-size:13.5px !important;color:var(--bone) !important}
+
+.estim{margin-top:22px;padding:20px;border-radius:12px;
+  border:1px solid rgba(115,177,103,.42);background:rgba(115,177,103,.08)}
+.estim .t{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--green)}
+.estim .v{font-family:"Dracula",serif;font-weight:400;
+  font-size:clamp(32px,6vw,52px);line-height:1.05;color:var(--bone);margin-top:4px}
+.estim .d{margin-top:10px;font-size:13px;line-height:1.6;color:var(--dim)}
+.alert{margin-top:14px;padding:16px 18px;border-radius:12px;
+  border:1px solid rgba(255,113,91,.45);background:rgba(255,113,91,.09);
+  font-size:13.5px;line-height:1.6;color:var(--dim)}
+.alert b{color:var(--coral)}
+
+.recap{margin-top:16px;border-top:1px solid var(--bord)}
+.recap .line{display:flex;justify-content:space-between;gap:18px;padding:9px 0;
+  border-bottom:1px solid var(--bord);font-size:13.5px}
+.recap .line span:first-child{color:var(--fg-dim);flex:0 0 auto}
+.recap .line span:last-child{color:var(--bone);text-align:right}
+
+.compris{margin-top:22px;padding:18px 20px;border-radius:12px;
+  border:1px solid var(--bord);background:rgba(6,3,10,.45)}
+.compris ul{margin:0;padding-left:20px;font-size:13px;color:var(--dim)}
+.legal{margin:20px 0 0;font-size:11.5px;line-height:1.65;color:var(--faint)}
+.hp{position:absolute;left:-9999px;opacity:0;pointer-events:none}
+
+#done{display:none;text-align:center;padding:clamp(40px,7vw,70px) clamp(20px,4vw,40px)}
+#done .mark{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;
+  border:1px solid rgba(115,177,103,.5);background:rgba(115,177,103,.12);
+  display:grid;place-items:center;font-size:28px;color:var(--green)}
+#done h2{font-family:"Dracula",serif;font-weight:400;color:var(--bone)}
+</style>
+</head>
+<body>
+
+<div id="bg"></div><div id="grain"></div><div id="vig"></div>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html">PHIRONIX</a>
+    <nav>
+      <a href="index.html" class="toujours">Portfolio</a>
+      <a href="devis.html" aria-current="page">Devis</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="cookies.html">Cookies</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="tete">
+  <div class="badge">Demande de devis</div>
+  <h1 aria-label="Dites-moi ce que vous avez en tête,je vous réponds avec un vrai devis.">Dites-moi ce que vous avez en t<span class="a ci">e</span>te,<br>je vous r<span class="a ai">e</span>ponds avec un <em>vrai devis</em>.</h1>
+  <div class="intro">
+    <p>Ce formulaire sert à cadrer votre projet avant qu'on se parle. Vous remplissez le format, le volume, le délai et le budget que vous avez en tête : en cinq minutes, j'ai de quoi vous répondre avec un prix et une date, au lieu de trois allers-retours par mail pour comprendre le besoin.</p>
+    <p><strong>Rien de ce que vous remplissez ici ne vous engage.</strong> Vous recevez ensuite mon devis, et c'est seulement là que vous décidez.</p>
+  </div>
+</div>
+
+<form id="form" autocomplete="on">
+  <!-- ======================================================================
+     SANS UNE VRAIE CLE ICI, LE FORMULAIRE N'ENVOIE RIEN : chaque visiteur
+     qui clique sur « Envoyer ma demande » voit « L'envoi a echoue ».
+     La cle se recupere sur web3forms.com en donnant votre adresse mail,
+     et se colle a la place de VOTRE_CLE_WEB3FORMS ci-dessous.
+     ====================================================================== -->
+  <input type="hidden" name="access_key" value="VOTRE_CLE_WEB3FORMS">
+  <input type="hidden" name="subject" id="mailSubject" value="Nouvelle demande de devis">
+  <input type="hidden" name="from_name" value="Formulaire devis phironix.cloud">
+  <input type="hidden" name="message" id="mailBody">
+  <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
+
+  <div class="steps" id="steps"></div>
+
+  <!-- ÉTAPE 1 -->
+  <section data-step="1" class="active">
+    <div class="card">
+      <h2>Avec qui vous travaillez</h2>
+      <p class="sub">Pour que vous sachiez à qui vous écrivez avant de remplir quoi que ce soit.</p>
+      <div class="fiche">
+        <div><span>Interlocuteur</span><p>François — Phironix</p></div>
+        <div><span>Métier</span><p>Monteur vidéo &amp; motion designer indépendant</p></div>
+        <div><span>Basé à</span><p>Poitiers, France — travail à distance</p></div>
+        <div><span>Outils</span><p>Premiere Pro, After Effects, DaVinci</p></div>
+        <div><span>Réponse</span><p>Sous 48 h ouvrées</p></div>
+        <div><span>Langues</span><p>Français, anglais</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>De quel format vous avez besoin ?</h2>
+      <p class="sub">Choisissez la forme finale de la vidéo. Le motion design n'est pas un format à part : vous pourrez en demander à l'intérieur d'un short ou d'une vidéo longue à l'étape suivante. La case « motion design » ci-dessous concerne les vidéos entièrement animées.</p>
+      <div class="grid c2" id="formats">
+        <button type="button" class="opt" data-v="short"><b>Shorts verticaux</b><small>Formats courts pour YouTube Shorts, TikTok, Reels. À l'unité ou en flux régulier.</small></button>
+        <button type="button" class="opt" data-v="longue"><b>Vidéo longue</b><small>Vidéo YouTube horizontale : essai vidéo, analyse, documentaire, face cam, podcast.</small></button>
+        <button type="button" class="opt" data-v="motion"><b>Motion design</b><small>Vidéo entièrement animée : trailer, teaser, présentation d'événement, générique, explainer.</small></button>
+        <button type="button" class="opt" data-v="autre"><b>Autre vidéo</b><small>After movie, cinématique, clip, bande-annonce, showreel, captation d'événement, publicité, vidéo de marque.</small></button>
+      </div>
+      <div class="nav">
+        <button type="button" class="btn btn-main" data-go="2" disabled id="n1">Continuer</button>
+        <span class="saved" id="saveTag"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 2 -->
+  <section data-step="2">
+
+    <!-- SHORTS -->
+    <div class="card" data-only="short">
+      <h2>Vos shorts</h2>
+      <p class="sub">Un besoin ponctuel et un flux régulier ne se chiffrent pas pareil. Dites-moi dans quel cas vous êtes.</p>
+      <div class="grid c2" id="shortMode">
+        <button type="button" class="opt" data-v="ponctuel"><b>Besoin ponctuel</b><small>Un lot de shorts, une campagne, un lancement. Vous donnez le nombre et la date.</small></button>
+        <button type="button" class="opt" data-v="recurrent"><b>Flux régulier</b><small>Des shorts tous les mois, dans la durée. Tarif dégressif par pack de 10.</small></button>
+      </div>
+
+      <div data-sub="ponctuel" style="display:none">
+        <div class="row">
+          <div><label class="f">Combien de shorts <i>*</i></label><input type="number" min="1" max="200" id="s_nb" placeholder="ex. 4"></div>
+          <div><label class="f">Pour quand <i>*</i></label>
+            <select id="s_delai">
+              <option value="">—</option>
+              <option>Sous 48 h (urgence)</option>
+              <option>Dans la semaine</option>
+              <option>Sous 2 semaines</option>
+              <option>Pas de date ferme</option>
+            </select>
+          </div>
+        </div>
+        <label class="f">Formats de sortie <i>*</i></label>
+        <div class="chips" data-multi="s_formats">
+          <button type="button" class="chip" data-v="9:16">9:16 vertical</button>
+          <button type="button" class="chip" data-v="4:5">4:5</button>
+          <button type="button" class="chip" data-v="1:1">1:1 carré</button>
+          <button type="button" class="chip" data-v="16:9">16:9 horizontal</button>
+        </div>
+        <p class="hint">Plusieurs formats possibles : la déclinaison d'un même short dans un deuxième format est comptée comme une demi-unité.</p>
+      </div>
+
+      <div data-sub="recurrent" style="display:none">
+        <div class="row">
+          <div><label class="f">Combien de shorts par mois <i>*</i></label><input type="number" min="1" max="100" id="s_mois" placeholder="ex. 10"></div>
+          <div><label class="f">Votre rythme de publication</label>
+            <select id="s_rythme">
+              <option value="">—</option>
+              <option>1 par semaine</option>
+              <option>2 à 3 par semaine</option>
+              <option>1 par jour</option>
+              <option>Pas encore régulier, je veux m'y mettre</option>
+            </select>
+          </div>
+        </div>
+        <label class="f">Ce que vous voulez déléguer</label>
+        <div class="chips" data-multi="s_delegation">
+          <button type="button" class="chip" data-v="Dérushage">Dérushage</button>
+          <button type="button" class="chip" data-v="Choix des extraits">Choix des extraits</button>
+          <button type="button" class="chip" data-v="Montage">Montage</button>
+          <button type="button" class="chip" data-v="Sous-titres">Sous-titres</button>
+          <button type="button" class="chip" data-v="Sound design">Sound design</button>
+          <button type="button" class="chip" data-v="Miniatures">Miniatures</button>
+          <button type="button" class="chip" data-v="Publication">Publication</button>
+        </div>
+        <label class="f">Formats de sortie <i>*</i></label>
+        <div class="chips" data-multi="s_formats2">
+          <button type="button" class="chip" data-v="9:16">9:16 vertical</button>
+          <button type="button" class="chip" data-v="4:5">4:5</button>
+          <button type="button" class="chip" data-v="1:1">1:1 carré</button>
+        </div>
+      </div>
+
+      <label class="f">Du motion design à l'intérieur des shorts ?</label>
+      <div class="grid c3" data-radio="s_motion">
+        <button type="button" class="opt" data-v="Aucun"><b>Aucun</b><small>Montage, rythme, sous-titres.</small></button>
+        <button type="button" class="opt" data-v="Ponctuel"><b>Ponctuel</b><small>Quelques titres animés, un logo, une incrustation.</small></button>
+        <button type="button" class="opt" data-v="Appuyé"><b>Appuyé</b><small>Habillage animé d'un bout à l'autre.</small></button>
+      </div>
+    </div>
+
+    <!-- VIDÉO LONGUE -->
+    <div class="card" data-only="longue">
+      <h2 aria-label="Votre vidéo longue">Votre vid<span class="a ai">e</span>o longue</h2>
+      <p class="sub">Je facture <strong>50 € par minute de vidéo montée</strong>, sur la durée finale. Donnez-moi la durée que vous visez.</p>
+      <label class="f">Durée finale visée <i>*</i></label>
+      <div class="grid c3" data-radio="l_duree">
+        <button type="button" class="opt" data-v="-7"><b>Moins de 7 min</b><small>≈ 250 à 350 €</small></button>
+        <button type="button" class="opt" data-v="7-12"><b>7 à 12 min</b><small>≈ 350 à 600 €</small></button>
+        <button type="button" class="opt" data-v="12-22"><b>12 à 22 min</b><small>≈ 600 à 1 100 €</small></button>
+        <button type="button" class="opt" data-v="22-40"><b>22 à 40 min</b><small>≈ 1 100 à 2 000 €</small></button>
+        <button type="button" class="opt" data-v="40-60"><b>40 min à 1 h</b><small>≈ 2 000 à 3 000 €</small></button>
+        <button type="button" class="opt" data-v="60+"><b>Plus d'1 h</b><small>Délai et prix à caler ensemble</small></button>
+      </div>
+      <p class="hint" id="delaiInfo" style="margin-top:14px"></p>
+
+      <label class="f">Quel genre de vidéo</label>
+      <div class="chips" data-multi="l_genre">
+        <button type="button" class="chip" data-v="Storytelling">Storytelling / narration</button>
+        <button type="button" class="chip" data-v="Analyse / essai vidéo">Analyse, essai vidéo</button>
+        <button type="button" class="chip" data-v="Documentaire">Documentaire</button>
+        <button type="button" class="chip" data-v="Face cam">Face cam</button>
+        <button type="button" class="chip" data-v="Podcast">Podcast</button>
+        <button type="button" class="chip" data-v="Gaming">Gaming</button>
+        <button type="button" class="chip" data-v="Tutoriel / pédagogie">Tutoriel, pédagogie</button>
+      </div>
+
+      <label class="f">Du motion design à l'intérieur de la vidéo ?</label>
+      <div class="grid c3" data-radio="l_motion">
+        <button type="button" class="opt" data-v="Aucun"><b>Aucun</b><small>Montage, rythme, étalonnage, son.</small></button>
+        <button type="button" class="opt" data-v="Ponctuel"><b>Ponctuel</b><small>Titres animés, schémas, quelques plans d'illustration.</small></button>
+        <button type="button" class="opt" data-v="Intégré"><b>Intégré</b><small>L'animation porte le propos tout du long. Devis dédié.</small></button>
+      </div>
+
+      <label class="f">Style recherché</label>
+      <textarea id="l_style" placeholder="Rythme, références de chaînes, ambiance, couleurs, ce que vous ne voulez surtout pas…"></textarea>
+
+      <div class="card" style="margin:24px 0 0;background:rgba(255,113,91,.06);border-color:rgba(255,113,91,.3)">
+        <label class="f" style="margin-top:0">Une case à part</label>
+        <div class="grid c2" data-radio="l_niche">
+          <button type="button" class="opt" data-v="Horreur"><b>Ma chaîne est dans l'horreur</b><small>Creepypasta, paranormal, urbex, analyse de films d'horreur, true crime. C'est la niche sur laquelle je travaille le plus.</small></button>
+          <button type="button" class="opt" data-v="Autre niche"><b>Une autre niche</b><small>Dites-la-moi juste en dessous.</small></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOTION DESIGN -->
+    <div class="card" data-only="motion">
+      <h2 aria-label="Votre vidéo en motion design">Votre vid<span class="a ai">e</span>o en motion design</h2>
+      <p class="sub">Vidéo entièrement animée, pensée pour la rétention et l'impact. Elle ne se chiffre pas à la minute : le prix dépend du nombre de plans et du niveau d'animation, donc je vous le donne après un échange.</p>
+      <label class="f">Type de vidéo <i>*</i></label>
+      <div class="grid c3" data-radio="m_type">
+        <button type="button" class="opt" data-v="Trailer"><b>Trailer / teaser</b><small>Sortie, lancement, annonce.</small></button>
+        <button type="button" class="opt" data-v="Événement"><b>Présentation d'événement</b><small>Salon, festival, conférence.</small></button>
+        <button type="button" class="opt" data-v="Générique"><b>Générique / habillage</b><small>Intro de chaîne, jingle, transitions.</small></button>
+        <button type="button" class="opt" data-v="Explainer"><b>Explainer</b><small>Expliquer un produit, un service, un mécanisme.</small></button>
+        <button type="button" class="opt" data-v="Cinématique"><b>Cinématique</b><small>Séquence narrative animée.</small></button>
+        <button type="button" class="opt" data-v="Autre motion"><b>Autre</b><small>Décrivez-le plus bas.</small></button>
+      </div>
+
+      <label class="f">Formats de sortie <i>*</i></label>
+      <div class="chips" data-multi="m_formats">
+        <button type="button" class="chip" data-v="16:9">16:9 horizontal</button>
+        <button type="button" class="chip" data-v="9:16">9:16 vertical</button>
+        <button type="button" class="chip" data-v="4:5">4:5</button>
+        <button type="button" class="chip" data-v="1:1">1:1 carré</button>
+      </div>
+
+      <div class="row">
+        <div><label class="f">Durée visée</label>
+          <select id="m_duree">
+            <option value="">—</option>
+            <option>Moins de 15 s</option>
+            <option>15 à 30 s</option>
+            <option>30 à 60 s</option>
+            <option>1 à 2 min</option>
+            <option>Plus de 2 min</option>
+          </select>
+        </div>
+        <div><label class="f">Vous avez une charte graphique ?</label>
+          <select id="m_charte">
+            <option value="">—</option>
+            <option>Oui, complète (logo, couleurs, polices)</option>
+            <option>Partielle (juste un logo)</option>
+            <option>Non, tout est à créer</option>
+          </select>
+        </div>
+      </div>
+      <label class="f">Style recherché</label>
+      <textarea id="m_style" placeholder="Références, ambiance, 2D / 3D, niveau d'animation, ce que la vidéo doit déclencher chez le spectateur…"></textarea>
+    </div>
+
+    <!-- AUTRE -->
+    <div class="card" data-only="autre">
+      <h2>Votre projet</h2>
+      <p class="sub">Tout ce qui ne rentre pas dans les cases précédentes. Choisissez ce qui s'en rapproche le plus, ou décrivez-le librement.</p>
+      <label class="f">De quoi s'agit-il <i>*</i></label>
+      <div class="chips" data-multi="a_type">
+        <button type="button" class="chip" data-v="After movie">After movie</button>
+        <button type="button" class="chip" data-v="Cinématique">Cinématique</button>
+        <button type="button" class="chip" data-v="Bande-annonce">Bande-annonce</button>
+        <button type="button" class="chip" data-v="Clip musical">Clip musical</button>
+        <button type="button" class="chip" data-v="Captation d'événement">Captation d'événement</button>
+        <button type="button" class="chip" data-v="Publicité / UGC">Publicité, UGC</button>
+        <button type="button" class="chip" data-v="Showreel">Showreel</button>
+        <button type="button" class="chip" data-v="Interview">Interview</button>
+        <button type="button" class="chip" data-v="Film de mariage">Film de mariage</button>
+        <button type="button" class="chip" data-v="Vidéo de marque">Vidéo de marque</button>
+      </div>
+      <div class="row">
+        <div><label class="f">Durée finale visée</label><input type="text" id="a_duree" placeholder="ex. 2 min 30"></div>
+        <div><label class="f">Formats de sortie</label><input type="text" id="a_formats" placeholder="ex. 16:9 + une version 9:16"></div>
+      </div>
+      <label class="f">Décrivez le projet <i>*</i></label>
+      <textarea id="a_desc" placeholder="Le contexte, où la vidéo sera diffusée, ce qu'elle doit provoquer, les contraintes que vous avez déjà."></textarea>
+    </div>
+
+    <div class="nav">
+      <button type="button" class="btn btn-ghost" data-go="1">Retour</button>
+      <button type="button" class="btn btn-main" data-go="3">Continuer</button>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 3 -->
+  <section data-step="3">
+    <div class="card">
+      <h2 aria-label="La matière et le calendrier">La mati<span class="a gr">e</span>re et le calendrier</h2>
+      <p class="sub">Ce qui fait la différence entre un devis juste et un devis au doigt mouillé.</p>
+
+      <label class="f">Qui fournit les images ?</label>
+      <div class="grid c3" data-radio="rushes">
+        <button type="button" class="opt" data-v="Je fournis tout"><b>Vous fournissez tout</b><small>Rushes, captations, assets.</small></button>
+        <button type="button" class="opt" data-v="Mixte"><b>Mixte</b><small>Vous donnez une base, je trouve le reste : des illustrations choisies pour votre univers, et dont l'usage est en règle.</small></button>
+        <button type="button" class="opt" data-v="À sourcer"><b>Tout est à sourcer</b><small>Je trouve et j'assemble l'ensemble des images : choisies pour coller à votre univers, et utilisables sans risque.</small></button>
+      </div>
+
+      <label class="f">Qui écrit le texte ou la voix off ?</label>
+      <div class="grid c3" data-radio="script">
+        <button type="button" class="opt" data-v="Script fourni"><b>Script fourni</b><small>Écrit et enregistré de votre côté.</small></button>
+        <button type="button" class="opt" data-v="Script à relire"><b>Écrit, pas enregistré</b><small>Le texte existe, la voix reste à faire.</small></button>
+        <button type="button" class="opt" data-v="Sans texte"><b>Pas de texte</b><small>Musique et images uniquement.</small></button>
+      </div>
+
+      <div class="row">
+        <div><label class="f">Date de livraison souhaitée</label><input type="text" id="deadline" placeholder="ex. 15 décembre, ou « pas pressé »"></div>
+        <div><label class="f">Comment vous me transmettez les fichiers</label>
+          <select id="transfert">
+            <option value="">—</option>
+            <option>Google Drive</option>
+            <option>SwissTransfer</option>
+            <option>WeTransfer</option>
+            <option>Dropbox</option>
+            <option>OneDrive</option>
+            <option>Disque dur ou clé USB</option>
+            <option>Je ne sais pas encore</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="f">Besoins en plus</label>
+      <div class="chips" data-multi="extras">
+        <button type="button" class="chip" data-v="Miniature">Miniature</button>
+        <button type="button" class="chip" data-v="Sous-titres">Sous-titres incrustés</button>
+        <button type="button" class="chip" data-v="Étalonnage poussé">Étalonnage poussé</button>
+        <button type="button" class="chip" data-v="Mixage audio">Mixage audio</button>
+        <button type="button" class="chip" data-v="Recherche musicale">Recherche musicale</button>
+        <button type="button" class="chip" data-v="Version anglaise">Version anglaise</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Votre budget</h2>
+      <p class="sub">Le chiffre que vous avez en tête pour ce projet. Il ne me sert pas à monter mon prix : il me sert à vous dire franchement ce qui rentre dedans et ce qui n'y rentre pas.</p>
+      <div class="row">
+        <div><label class="f">Budget indicatif, en euros</label><input type="number" min="0" step="10" id="budget" placeholder="ex. 600"></div>
+        <div><label class="f">Ce budget est</label>
+          <select id="budgetType">
+            <option value="">—</option>
+            <option>Ferme, c'est mon plafond</option>
+            <option>Indicatif, ajustable</option>
+            <option>Je n'en ai pas encore</option>
+          </select>
+        </div>
+      </div>
+      <div id="estimBox"></div>
+    </div>
+
+    <div class="nav">
+      <button type="button" class="btn btn-ghost" data-go="2">Retour</button>
+      <button type="button" class="btn btn-main" data-go="4">Voir le récapitulatif</button>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 4 -->
+  <section data-step="4">
+    <div class="card">
+      <h2 aria-label="Vos coordonnées">Vos coordonn<span class="a ai">e</span>es</h2>
+      <p class="sub">Pour que je puisse vous répondre.</p>
+      <div class="row">
+        <div><label class="f">Prénom et nom <i>*</i></label><input type="text" name="nom" id="nom" autocomplete="name"></div>
+        <div><label class="f">Adresse e-mail <i>*</i></label><input type="email" name="email" id="email" autocomplete="email"></div>
+      </div>
+      <div class="row">
+        <div><label class="f">Votre chaîne ou votre site</label><input type="url" name="lien" id="lien" placeholder="https://"></div>
+        <div><label class="f">Vous êtes</label>
+          <select id="statut">
+            <option value="">—</option>
+            <option>Créateur / créatrice de contenu</option>
+            <option>Entreprise</option>
+            <option>Agence</option>
+            <option>Association</option>
+            <option>Particulier</option>
+          </select>
+        </div>
+      </div>
+      <label class="f">Quelque chose à ajouter</label>
+      <textarea id="libre" placeholder="Tout ce que le formulaire ne vous a pas demandé."></textarea>
+    </div>
+
+    <div class="card">
+      <h2 aria-label="Récapitulatif">R<span class="a ai">e</span>capitulatif</h2>
+      <p class="sub">Relisez avant d'envoyer. Vous pouvez revenir en arrière, rien ne sera perdu.</p>
+      <div class="recap" id="recap"></div>
+      <div id="estimBox2"></div>
+      <div class="compris">
+        <p style="margin-bottom:8px;color:var(--creme)"><strong>Ce que comprend une prestation, sauf mention contraire :</strong></p>
+        <ul>
+          <li>Montage, rythme, étalonnage de base et mixage</li>
+          <li>Deux séries de retours groupés, puis 40 € par série supplémentaire</li>
+          <li>Livraison des fichiers exportés dans les formats demandés</li>
+          <li>Acompte de 30 % à la commande, solde à la livraison, paiement à 30 jours</li>
+          <li>Musiques et images dont l'usage est en règle, licence fournie</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal">
+      Ce formulaire est une demande de devis. Il ne constitue ni un devis, ni une offre ferme, ni un engagement contractuel, et les montants affichés sont des estimations indicatives. Seul le devis que je vous adresse ensuite, signé de votre main avec la mention « Bon pour accord », engage les deux parties. Vos informations me servent uniquement à vous répondre et ne sont transmises à personne : le détail figure dans la <a href="confidentialite.html">politique de confidentialité</a>.
+    </div>
+
+    <div class="nav">
+      <button type="button" class="btn btn-ghost" data-go="3">Retour</button>
+      <button type="submit" class="btn btn-main" id="send">Envoyer ma demande</button>
+      <button type="button" class="btn btn-ghost" id="reset">Tout effacer</button>
+    </div>
+  </section>
+</form>
+
+<div id="done" class="card">
+  <div class="mark">✓</div>
+  <h2 style="font-size:clamp(30px,6vw,44px);margin-bottom:12px" aria-label="Demande reçue">Demande re<span class="a ce">c</span>ue</h2>
+  <p style="color:var(--creme-dim);max-width:46ch;margin:0 auto">Je la lis et je reviens vers vous sous 48 h ouvrées avec un devis chiffré, ou avec mes questions s'il m'en manque.</p>
+</div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>François — Phironix · Monteur vidéo &amp; motion designer</span>
+    <nav>
+      <a href="index.html" class="toujours">Portfolio</a>
+      <a href="devis.html" aria-current="page">Devis</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="cookies.html">Cookies</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* ---------- accents posés par-dessus la lettre (Dracula reste intacte) ---------- */
+var ACC={'é':['e','ai'],'É':['E','ai'],'è':['e','gr'],'È':['E','gr'],'ê':['e','ci'],
+         'à':['a','gr'],'À':['A','gr'],'â':['a','ci'],'ç':['c','ce'],'î':['i','ci'],
+         'ô':['o','ci'],'û':['u','ci'],'ù':['u','gr']};
+var HORS={'€':1,'«':1,'»':1,'—':1,'…':1,'’':1};
+function hab(t){
+  var o='';
+  for(var i=0;i<t.length;i++){
+    var c=t[i];
+    if(ACC[c]) o+='<span class="a '+ACC[c][1]+'">'+ACC[c][0]+'</span>';
+    else if(HORS[c]) o+='<span class="hors">'+c+'</span>';
+    else o+=c;
+  }
+  return o;
+}
+
+(function(){
+"use strict";
+var KEY='phironix-devis-v1';
+var state={step:1,format:'',shortMode:''};
+var multis={}, radios={};
+
+/* ---------- Persistance ---------- */
+function save(){
+  var d={state:state,multis:multis,radios:radios,fields:{}};
+  document.querySelectorAll('input[type=text],input[type=email],input[type=number],input[type=url],textarea,select').forEach(function(el){
+    if(el.id) d.fields[el.id]=el.value;
+  });
+  try{localStorage.setItem(KEY,JSON.stringify(d));
+    var t=document.getElementById('saveTag');
+    if(t){t.textContent='Brouillon enregistré sur cet appareil';}
+  }catch(e){}
+}
+function load(){
+  var raw;try{raw=localStorage.getItem(KEY);}catch(e){return;}
+  if(!raw)return;
+  var d;try{d=JSON.parse(raw);}catch(e){return;}
+  state=d.state||state; multis=d.multis||{}; radios=d.radios||{};
+  Object.keys(d.fields||{}).forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value=d.fields[id];
+  });
+  document.querySelectorAll('#formats .opt').forEach(function(b){b.classList.toggle('sel',b.dataset.v===state.format);});
+  document.querySelectorAll('#shortMode .opt').forEach(function(b){b.classList.toggle('sel',b.dataset.v===state.shortMode);});
+  Object.keys(radios).forEach(function(k){
+    var box=document.querySelector('[data-radio="'+k+'"]'); if(!box)return;
+    box.querySelectorAll('.opt').forEach(function(b){b.classList.toggle('sel',b.dataset.v===radios[k]);});
+  });
+  Object.keys(multis).forEach(function(k){
+    var box=document.querySelector('[data-multi="'+k+'"]'); if(!box)return;
+    box.querySelectorAll('.chip').forEach(function(b){b.classList.toggle('sel',multis[k].indexOf(b.dataset.v)>-1);});
+  });
+}
+
+/* ---------- Navigation ---------- */
+function go(n,push){
+  state.step=n;
+  document.querySelectorAll('section[data-step]').forEach(function(s){
+    s.classList.toggle('active',s.dataset.step===String(n));
+  });
+  pills(); showOnly(); estimate(); recap(); save();
+  if(push!==false && location.hash!=='#etape-'+n) location.hash='#etape-'+n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function pills(){
+  var names=['Format','Détails','Budget','Envoi'],h='';
+  for(var i=1;i<=4;i++){
+    var c=i===state.step?'pill on':(i<state.step?'pill done':'pill');
+    h+='<span class="'+c+'">'+i+'. '+names[i-1]+'</span>';
+  }
+  document.getElementById('steps').innerHTML=h;
+}
+function showOnly(){
+  document.querySelectorAll('[data-only]').forEach(function(el){
+    el.style.display=(el.dataset.only===state.format)?'':'none';
+  });
+  document.querySelectorAll('[data-sub]').forEach(function(el){
+    el.style.display=(el.dataset.sub===state.shortMode)?'':'none';
+  });
+}
+window.addEventListener('hashchange',function(){
+  var m=/^#etape-(\d)$/.exec(location.hash);
+  if(m) go(parseInt(m[1],10),false);
+});
+
+/* ---------- Sélections ---------- */
+document.querySelectorAll('#formats .opt').forEach(function(b){
+  b.onclick=function(){
+    state.format=b.dataset.v;
+    document.querySelectorAll('#formats .opt').forEach(function(x){x.classList.remove('sel');});
+    b.classList.add('sel');
+    document.getElementById('n1').disabled=false;
+    showOnly(); save();
+  };
+});
+document.querySelectorAll('#shortMode .opt').forEach(function(b){
+  b.onclick=function(){
+    state.shortMode=b.dataset.v;
+    document.querySelectorAll('#shortMode .opt').forEach(function(x){x.classList.remove('sel');});
+    b.classList.add('sel'); showOnly(); estimate(); save();
+  };
+});
+document.querySelectorAll('[data-radio]').forEach(function(box){
+  var k=box.dataset.radio;
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.onclick=function(){
+      radios[k]=b.dataset.v;
+      box.querySelectorAll('.opt').forEach(function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); estimate(); save();
+    };
+  });
+});
+document.querySelectorAll('[data-multi]').forEach(function(box){
+  var k=box.dataset.multi; if(!multis[k])multis[k]=[];
+  box.querySelectorAll('.chip').forEach(function(b){
+    b.onclick=function(){
+      var i=multis[k].indexOf(b.dataset.v);
+      if(i>-1){multis[k].splice(i,1);b.classList.remove('sel');}
+      else{multis[k].push(b.dataset.v);b.classList.add('sel');}
+      save();
+    };
+  });
+});
+document.querySelectorAll('[data-go]').forEach(function(b){
+  b.onclick=function(){go(parseInt(b.dataset.go,10));};
+});
+document.addEventListener('input',function(e){
+  if(e.target.id){estimate();save();}
+});
+
+/* ---------- Estimation ---------- */
+var DUREES={'-7':[5,7],'7-12':[7,12],'12-22':[12,22],'22-40':[22,40],'40-60':[40,60],'60+':[0,0]};
+var DELAIS={'-7':'Délai habituel : 5 jours ouvrés.','7-12':'Délai habituel : 1 semaine.','12-22':'Délai habituel : 10 jours.','22-40':'Délai à caler ensemble, en général 2 à 3 semaines.','40-60':'Délai à caler ensemble, en général 3 semaines et plus.','60+':'Délai et prix à définir ensemble selon la matière.'};
+
+function shortPrice(n){
+  if(!n||n<1)return null;
+  var packs=Math.floor(n/10), reste=n%10;
+  return packs*250 + reste*30;
+}
+function estimate(){
+  var r={titre:'',valeur:'',detail:''};
+  if(state.format==='short'){
+    var n=0;
+    if(state.shortMode==='ponctuel') n=parseInt(document.getElementById('s_nb').value||0,10);
+    if(state.shortMode==='recurrent') n=parseInt(document.getElementById('s_mois').value||0,10);
+    var p=shortPrice(n);
+    if(p){
+      r.titre='Estimation';
+      r.valeur=p.toLocaleString('fr-FR')+' €';
+      r.detail='Base de 30 € par short. Par pack de 10 shorts complet, le pack passe à 250 € au lieu de 300 €. Au-delà du pack, chaque short est compté à 30 €.'+(state.shortMode==='recurrent'?' Montant mensuel.':'');
+      if(radios.s_motion==='Appuyé') r.detail+=' L\'habillage animé d\'un bout à l\'autre se chiffre à part.';
+    }
+  }
+  if(state.format==='longue'){
+    var d=DUREES[radios.l_duree];
+    var info=document.getElementById('delaiInfo');
+    if(info) info.textContent=DELAIS[radios.l_duree]||'';
+    if(d&&d[0]){
+      r.titre='Estimation';
+      r.valeur=(d[0]*50).toLocaleString('fr-FR')+' € à '+(d[1]*50).toLocaleString('fr-FR')+' €';
+      r.detail='50 € par minute de vidéo montée, sur la durée finale. '+(DELAIS[radios.l_duree]||'');
+      if(radios.l_motion==='Intégré') r.detail+=' Une vidéo portée par l\'animation sort de ce tarif et fait l\'objet d\'un devis dédié.';
+    } else if(radios.l_duree==='60+'){
+      r.titre='Estimation';r.valeur='Sur devis';r.detail=DELAIS['60+'];
+    }
+  }
+  if(state.format==='motion'||state.format==='autre'){
+    if(radios.m_type||(multis.a_type&&multis.a_type.length)){
+      r.titre='Estimation';r.valeur='Après échange';
+      r.detail='Ce type de vidéo dépend du nombre de plans et du niveau d\'animation : je vous donne un prix ferme une fois votre demande lue, sans vous faire attendre.';
+    }
+  }
+  var html='';
+  if(r.valeur){
+    html='<div class="estim"><div class="t">'+r.titre+'</div><div class="v" aria-label="'+r.valeur+'">'+hab(r.valeur)+'</div><div class="d">'+r.detail+'</div></div>';
+    var b=parseInt(document.getElementById('budget').value||0,10);
+    var mini=null;
+    if(state.format==='short'){mini=shortPrice(parseInt((document.getElementById('s_nb').value||document.getElementById('s_mois').value||0),10));}
+    if(state.format==='longue'&&DUREES[radios.l_duree]&&DUREES[radios.l_duree][0]) mini=DUREES[radios.l_duree][0]*50;
+    if(b&&mini&&b<mini*0.85){
+      html+='<div class="alert"><b>Ce budget est en dessous de mon tarif pour ce volume.</b> Je vous le dis tout de suite pour ne pas vous faire perdre de temps. On peut en général rapprocher les deux en ajustant la durée, le volume ou le niveau d\'habillage : je reviens vers vous avec ce qui est faisable à ce prix.</div>';
+    }
+  }
+  var a=document.getElementById('estimBox'),c=document.getElementById('estimBox2');
+  if(a)a.innerHTML=html; if(c)c.innerHTML=html;
+}
+
+/* ---------- Récapitulatif ---------- */
+var LABELS={format:'Format',shortMode:'Type de besoin',s_nb:'Nombre de shorts',s_delai:'Délai',s_formats:'Formats',s_formats2:'Formats',s_mois:'Shorts par mois',s_rythme:'Rythme de publication',s_delegation:'À déléguer',s_motion:'Motion design dans les shorts',l_duree:'Durée visée',l_genre:'Genre',l_motion:'Motion design dans la vidéo',l_style:'Style recherché',l_niche:'Niche',m_type:'Type de motion design',m_formats:'Formats',m_duree:'Durée',m_charte:'Charte graphique',m_style:'Style recherché',a_type:'Type de projet',a_duree:'Durée',a_formats:'Formats',a_desc:'Description',rushes:'Images',script:'Texte / voix off',deadline:'Livraison souhaitée',transfert:'Transfert des fichiers',extras:'Besoins en plus',budget:'Budget indicatif',budgetType:'Nature du budget',nom:'Nom',email:'E-mail',lien:'Lien',statut:'Profil',libre:'Précisions'};
+var FORMAT_LABEL={short:'Shorts verticaux',longue:'Vidéo longue',motion:'Motion design',autre:'Autre vidéo'};
+
+function collect(){
+  var out=[];
+  if(state.format) out.push(['Format',FORMAT_LABEL[state.format]]);
+  if(state.format==='short'&&state.shortMode) out.push(['Type de besoin',state.shortMode==='ponctuel'?'Besoin ponctuel':'Flux régulier']);
+  Object.keys(radios).forEach(function(k){if(LABELS[k]&&radios[k]) out.push([LABELS[k],radios[k]]);});
+  Object.keys(multis).forEach(function(k){if(LABELS[k]&&multis[k].length) out.push([LABELS[k],multis[k].join(', ')]);});
+  ['s_nb','s_delai','s_mois','s_rythme','l_style','m_duree','m_charte','m_style','a_duree','a_formats','a_desc','deadline','transfert','budget','budgetType','nom','email','lien','statut','libre'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&el.value&&LABELS[id]) out.push([LABELS[id],id==='budget'?el.value+' €':el.value]);
+  });
+  return out;
+}
+function recap(){
+  var box=document.getElementById('recap'); if(!box)return;
+  var rows=collect(),h='';
+  if(!rows.length){h='<p style="color:var(--creme-faint)">Rien à afficher pour l\'instant.</p>';}
+  rows.forEach(function(r){h+='<div class="line"><span>'+r[0]+'</span><span>'+String(r[1]).replace(/</g,'&lt;')+'</span></div>';});
+  box.innerHTML=h;
+}
+
+/* ---------- Envoi ---------- */
+document.getElementById('form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var nom=document.getElementById('nom').value.trim();
+  var mail=document.getElementById('email').value.trim();
+  if(!nom||!mail){alert('Il me manque votre nom et votre e-mail pour pouvoir vous répondre.');return;}
+  var rows=collect(),txt='DEMANDE DE DEVIS\n\n';
+  rows.forEach(function(r){txt+=r[0]+' : '+r[1]+'\n';});
+  var est=document.querySelector('#estimBox2 .v');
+  if(est) txt+='\nEstimation affichée au client : '+est.textContent+'\n';
+  document.getElementById('mailBody').value=txt;
+  document.getElementById('mailSubject').value='Devis — '+(FORMAT_LABEL[state.format]||'projet')+' — '+nom;
+
+  var btn=document.getElementById('send');
+  btn.disabled=true; btn.textContent='Envoi…';
+  var fd=new FormData(document.getElementById('form'));
+  fetch('https://api.web3forms.com/submit',{method:'POST',body:fd})
+   .then(function(r){return r.json();})
+   .then(function(d){
+     if(d.success){
+       document.getElementById('form').style.display='none';
+       document.getElementById('steps').style.display='none';
+       document.getElementById('done').style.display='block';
+       try{localStorage.removeItem(KEY);}catch(e){}
+       window.scrollTo({top:0,behavior:'smooth'});
+     } else {
+       btn.disabled=false;btn.textContent='Envoyer ma demande';
+       alert('L\'envoi a échoué. Écrivez-moi directement par mail, je m\'en occupe.');
+     }
+   })
+   .catch(function(){
+     btn.disabled=false;btn.textContent='Envoyer ma demande';
+     alert('L\'envoi a échoué. Écrivez-moi directement par mail, je m\'en occupe.');
+   });
+});
+
+document.getElementById('reset').onclick=function(){
+  if(!confirm('Tout effacer et repartir de zéro ?'))return;
+  try{localStorage.removeItem(KEY);}catch(e){}
+  location.hash='';location.reload();
+};
+
+/* ---------- Init ---------- */
+load();
+if(state.format) document.getElementById('n1').disabled=false;
+var m=/^#etape-(\d)$/.exec(location.hash);
+go(m?parseInt(m[1],10):state.step,false);
+window.addEventListener('beforeunload',save);
+})();
+</script>
+
+</body>
+</html>

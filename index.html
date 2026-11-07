@@ -219,6 +219,11 @@ nav a:hover{color:var(--coral)}
 .socials{margin-top:28px;display:flex;gap:22px;justify-content:center;flex-wrap:wrap}
 .socials a{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--fg-dim);text-decoration:none}
 .socials a:hover{color:var(--coral)}
+.fnav{margin-top:16px;display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.fnav a{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-dim);
+  text-decoration:none;transition:color .25s}
+.fnav a:hover{color:var(--coral)}
+.fcop{display:block}
 footer{position:relative;z-index:2;padding:40px 0 60px;text-align:center;
   font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#5E5459}
 
@@ -376,7 +381,15 @@ footer{position:relative;z-index:2;padding:40px 0 60px;text-align:center;
   </section>
 </main>
 
-<footer>Phironix — © 2026</footer>
+<footer>
+  <span class="fcop">Phironix — © 2026</span>
+  <nav class="fnav">
+    <a href="devis.html">Demander un devis</a>
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="cookies.html">Cookies</a>
+  </nav>
+</footer>
 
 <script>
 /* ===========================================================
